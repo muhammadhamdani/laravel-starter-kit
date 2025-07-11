@@ -55,9 +55,15 @@ class PermissionController extends Controller
         ]);
 
         if ($permission) {
-            $this->logSuccess('create-permission', "Created Permission: {$permission->name}", ['permission_id' => $permission->id]);
+            $this->logSuccess('create-permission', "Created Permission: {$permission->name}", [
+                'permission_id' => $permission->id,
+                'new_data' => $permission->toArray(),
+            ]);
         } else {
-            $this->logError('create-permission', "Failed to create permission: {$permission->name}", ['permission_id' => $permission->id]);
+            $this->logError('create-permission', "Failed to create permission: {$permission->name}", [
+                'permission_id' => $permission->id,
+                'new_data' => $permission->toArray(),
+            ]);
         }
 
         if ($request->saveBack) {
@@ -106,14 +112,23 @@ class PermissionController extends Controller
     {
         $this->authorize('update', $permission);
 
+        $oldData = $permission->replicate();
         $permission->update([
             'name' => $request->name,
         ]);
 
         if ($permission) {
-            $this->logSuccess('update-permission', "Update Permission: {$permission->name}", ['permission_id' => $permission->id]);
+            $this->logSuccess('update-permission', "Update Permission: {$permission->name}", [
+                'permission_id' => $permission->id,
+                'old_data' => $oldData->toArray(),
+                'new_data' => $permission->toArray(),
+            ]);
         } else {
-            $this->logError('update-permission', "Failed to update permission: {$permission->name}", ['permission_id' => $permission->id]);
+            $this->logError('update-permission', "Failed to update permission: {$permission->name}", [
+                'permission_id' => $permission->id,
+                'old_data' => $oldData->toArray(),
+                'new_data' => $permission->toArray(),
+            ]);
         }
 
         if ($request->saveBack) {

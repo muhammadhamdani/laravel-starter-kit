@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\Admin\Core;
 
-use App\Models\Core\Role;
 use Inertia\Inertia;
+use App\Models\Core\Role;
+use App\Traits\LogActivity;
 use Illuminate\Http\Request;
+use App\Models\Core\Permission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
-use App\Models\Core\Permission;
 
 class RoleController extends Controller
 {
+    use LogActivity;
+
     /**
      * Display a listing of the resource.
      */
@@ -52,6 +55,18 @@ class RoleController extends Controller
         ]);
 
         $role->permissions()->sync($request->permissions);
+
+        if ($role) {
+            $this->logSuccess('create-role', "Created Role: {$role->name}", [
+                'role_id' => $role->id,
+                'new_data' => $role->toArray(),
+            ]);
+        } else {
+            $this->logError('create-role', "Failed to create role: {$role->name}", [
+                'role_id' => $role->id,
+                'new_data' => $role->toArray(),
+            ]);
+        }
 
         if ($request->saveBack) {
             return redirect()->route('roles.index')->with('success', 'Role created successfully');
@@ -102,11 +117,26 @@ class RoleController extends Controller
     {
         $this->authorize('update', $role);
 
+        $oldData = $role->replicate();
         $role->update([
             'name' => $request->name,
         ]);
 
         $role->permissions()->sync($request->permissions);
+
+        if ($role) {
+            $this->logSuccess('update-role', "Update Role: {$role->name}", [
+                'role_id' => $role->id,
+                'old_data' => $oldData->toArray(),
+                'new_data' => $role->toArray(),
+            ]);
+        } else {
+            $this->logError('update-role', "Failed to update role: {$role->name}", [
+                'role_id' => $role->id,
+                'old_data' => $oldData->toArray(),
+                'new_data' => $role->toArray(),
+            ]);
+        }
 
         if ($request->saveBack) {
             return redirect()->route('roles.index')->with('success', 'Role updated successfully');
@@ -123,6 +153,12 @@ class RoleController extends Controller
         $this->authorize('delete', $role);
 
         $role->delete();
+
+        if ($role) {
+            $this->logSuccess('delete-role', "Delete Role: {$role->name}", ['role_id' => $role->id]);
+        } else {
+            $this->logError('delete-role', "Failed to delete role: {$role->name}", ['role_id' => $role->id]);
+        }
 
         return redirect()->route('roles.index')->with('success', 'Role deleted successfully');
     }

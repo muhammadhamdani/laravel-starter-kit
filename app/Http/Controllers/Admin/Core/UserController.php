@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\Core\Role;
 use App\Models\Core\User;
+use App\Traits\LogActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -14,6 +15,8 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
+    use LogActivity;
+
     /**
      * Display a listing of the resource.
      */
@@ -55,6 +58,18 @@ class UserController extends Controller
             'password' => bcrypt($request->password),
             'role' => ['required'],
         ])->assignRole($request->role);
+
+        if ($user) {
+            $this->logSuccess('create-user', "Created User: {$user->name}", [
+                'user_id' => $user->id,
+                'new_data' => $user->toArray(),
+            ]);
+        } else {
+            $this->logError('create-user', "Failed to create user: {$user->name}", [
+                'user_id' => $user->id,
+                'new_data' => $user->toArray(),
+            ]);
+        }
 
         if ($request->saveBack) {
             return redirect()->route('users.index')->with('success', 'User created successfully');
@@ -108,6 +123,8 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
 
+        $oldData = $user->replicate();
+
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
@@ -120,6 +137,20 @@ class UserController extends Controller
         }
 
         $user->syncRoles($request->role);
+
+        if ($user) {
+            $this->logSuccess('update-user', "Update User: {$user->name}", [
+                'user_id' => $user->id,
+                'old_data' => $oldData->toArray(),
+                'new_data' => $user->toArray(),
+            ]);
+        } else {
+            $this->logError('update-user', "Failed to update user: {$user->name}", [
+                'user_id' => $user->id,
+                'old_data' => $oldData->toArray(),
+                'new_data' => $user->toArray(),
+            ]);
+        }
 
         if ($request->saveBack) {
             return redirect()->route('users.index')->with('success', 'User updated successfully');
@@ -137,6 +168,12 @@ class UserController extends Controller
 
         $user->delete();
 
+        if ($user) {
+            $this->logSuccess('delete-user', "Delete User: {$user->name}", ['user_id' => $user->id]);
+        } else {
+            $this->logError('delete-user', "Failed to delete user: {$user->name}", ['user_id' => $user->id]);
+        }
+
         return redirect()->route('users.index')->with('success', 'User deleted successfully');
     }
 
@@ -150,8 +187,24 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'User not found');
         }
 
+        $oldData = $user->replicate();
+
         $user->email_verified_at = now();
         $user->save();
+
+        if ($user) {
+            $this->logSuccess('update-user', "Update User: {$user->name}", [
+                'user_id' => $user->id,
+                'old_data' => $oldData->toArray(),
+                'new_data' => $user->toArray(),
+            ]);
+        } else {
+            $this->logError('update-user', "Failed to update user: {$user->name}", [
+                'user_id' => $user->id,
+                'old_data' => $oldData->toArray(),
+                'new_data' => $user->toArray(),
+            ]);
+        }
 
         return redirect()->route('users.index')->with('success', 'User verified successfully');
     }
