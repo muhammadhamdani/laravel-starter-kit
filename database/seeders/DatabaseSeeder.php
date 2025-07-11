@@ -41,13 +41,5 @@ class DatabaseSeeder extends Seeder
             ['name' => 'delete-user'],
             ['name' => 'data-user'],
         ])->each(fn($permission) => Permission::create($permission)->assignRole('Administrators'));
-
-        User::factory(1000)->create()->each(fn($user) => $user->assignRole('Users'));
-
-        User::create([
-            'name' => 'Admin',
-            'email' => 'muhammadhamdani017@gmail.com',
-            'password' => Hash::make('password'),
-        ])->assignRole('Administrators');
     }
 }
