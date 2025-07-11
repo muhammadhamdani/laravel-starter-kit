@@ -187,23 +187,13 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'User not found');
         }
 
-        $oldData = $user->replicate();
-
         $user->email_verified_at = now();
         $user->save();
 
         if ($user) {
-            $this->logSuccess('update-user', "Update User: {$user->name}", [
-                'user_id' => $user->id,
-                'old_data' => $oldData->toArray(),
-                'new_data' => $user->toArray(),
-            ]);
+            $this->logSuccess('verify-user', "Verify User: {$user->name}", ['user_id' => $user->id]);
         } else {
-            $this->logError('update-user', "Failed to update user: {$user->name}", [
-                'user_id' => $user->id,
-                'old_data' => $oldData->toArray(),
-                'new_data' => $user->toArray(),
-            ]);
+            $this->logError('verify-user', "Failed to verify user: {$user->name}", ['user_id' => $user->id]);
         }
 
         return redirect()->route('users.index')->with('success', 'User verified successfully');
