@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Core;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Support\Collection;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -50,7 +50,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function permissions()
+    public function resolvedPermissions()
     {
         return $this->roles()
             ->with('permissions')
@@ -59,5 +59,10 @@ class User extends Authenticatable
             ->pluck('name')
             ->unique()
             ->values();
+    }
+
+    public function socials(): HasMany
+    {
+        return $this->hasMany(Social::class);
     }
 }

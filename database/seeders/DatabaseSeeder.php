@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
+use App\Models\Core\Role;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\User;
-use App\Models\Permission;
+use App\Models\Core\User;
+use App\Models\Core\Permission;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\PermissionRegistrar;
@@ -29,16 +29,25 @@ class DatabaseSeeder extends Seeder
             ['name' => 'create-permission'],
             ['name' => 'update-permission'],
             ['name' => 'delete-permission'],
+            ['name' => 'data-permission'],
             ['name' => 'view-role'],
             ['name' => 'create-role'],
             ['name' => 'update-role'],
             ['name' => 'delete-role'],
+            ['name' => 'data-role'],
             ['name' => 'view-user'],
             ['name' => 'create-user'],
             ['name' => 'update-user'],
             ['name' => 'delete-user'],
+            ['name' => 'data-user'],
         ])->each(fn($permission) => Permission::create($permission)->assignRole('Administrators'));
 
         User::factory(1000)->create()->each(fn($user) => $user->assignRole('Users'));
+
+        User::create([
+            'name' => 'Admin',
+            'email' => 'muhammadhamdani017@gmail.com',
+            'password' => Hash::make('password'),
+        ])->assignRole('Administrators');
     }
 }

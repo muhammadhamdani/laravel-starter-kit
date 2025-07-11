@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin\Core;
 
-use App\Models\Role;
 use Inertia\Inertia;
-use App\Models\Permission;
+use App\Models\Core\Role;
 use Illuminate\Http\Request;
+use App\Models\Core\Permission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
@@ -17,6 +17,8 @@ class PermissionController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Permission::class);
+
         $data = [];
 
         return Inertia::render('admin/core/permissions/list', $data);
@@ -27,7 +29,9 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        $roles = Role::all();
+        $this->authorize('create', Permission::class);
+
+        $roles = Role::with('permissions')->get();
 
         $data = [
             'roles' => $roles
@@ -41,6 +45,8 @@ class PermissionController extends Controller
      */
     public function store(StorePermissionRequest $request)
     {
+        $this->authorize('create', Permission::class);
+
         $permission = Permission::create([
             'name' => $request->name,
         ]);
@@ -57,6 +63,8 @@ class PermissionController extends Controller
      */
     public function show(Permission $permission)
     {
+        $this->authorize('view', $permission);
+
         $findData = Permission::find($permission->id);
 
         $data = [
@@ -71,6 +79,8 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission)
     {
+        $this->authorize('update', $permission);
+
         $findData = Permission::with(['roles'])->find($permission->id);
 
         $data = [
@@ -85,6 +95,8 @@ class PermissionController extends Controller
      */
     public function update(UpdatePermissionRequest $request, Permission $permission)
     {
+        $this->authorize('update', $permission);
+
         $permission->update([
             'name' => $request->name,
         ]);
@@ -101,6 +113,8 @@ class PermissionController extends Controller
      */
     public function destroy(permission $permission)
     {
+        $this->authorize('delete', $permission);
+
         $permission->delete();
 
         return redirect()->route('permissions.index')->with('success', 'permission deleted successfully');
@@ -108,13 +122,16 @@ class PermissionController extends Controller
 
     public function getData(Request $request)
     {
+        $this->authorize('data-permission', new Permission());
+
         $perPage = $request->input('perPage', null);
         $page = $request->input('page', null);
         $globalSearch = $request->input('globalSearch', '');
         $orderDirection = $request->input('orderDirection', 'desc');
         $orderBy = $request->input('orderBy', 'id');
 
-        $query = permission::query()
+        $query = Permission::query()
+            ->with(['roles'])
             ->latest()
             ->when($globalSearch, function ($query, $search) {
                 return $query->where('name', 'like', "%{$search}%");

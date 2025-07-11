@@ -18,7 +18,7 @@ export default function ListPage() {
         {
             header: (info: any) => renderRowHeader(info, 'Role'),
             accessorKey: 'roles',
-            cell: (info: any) => info.row.original.roles[0].name,
+            cell: (info: any) => info.row.original?.roles[0]?.name,
         },
         {
             header: (info: any) => renderRowHeader(info, 'Verified'),

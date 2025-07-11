@@ -3,6 +3,14 @@
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 
+Breadcrumbs::for('google.redirect', function (BreadcrumbTrail $trail) {
+    $trail->push('Google Redirect', route('google.redirect', ['provider' => 'google']));
+});
+
+Breadcrumbs::for('google.callback', function (BreadcrumbTrail $trail) {
+    $trail->push('Google Callback', route('google.callback', ['provider' => 'google']));
+});
+
 Breadcrumbs::for('login', function (BreadcrumbTrail $trail) {
     $trail->push('Login', route('login'));
 });

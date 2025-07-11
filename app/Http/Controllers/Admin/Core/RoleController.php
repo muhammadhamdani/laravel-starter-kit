@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Core;
 
-use App\Models\Role;
+use App\Models\Core\Role;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
-use App\Models\Permission;
+use App\Models\Core\Permission;
 
 class RoleController extends Controller
 {
@@ -17,6 +17,8 @@ class RoleController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Role::class);
+
         $data = [];
 
         return Inertia::render('admin/core/roles/list', $data);
@@ -27,7 +29,9 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::all();
+        $this->authorize('create', Role::class);
+
+        $permissions = Permission::with(['roles'])->get();
 
         $data = [
             'permissions' => $permissions
@@ -41,6 +45,8 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request)
     {
+        $this->authorize('create', Role::class);
+
         $role = Role::create([
             'name' => $request->name,
         ]);
@@ -59,6 +65,8 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
+        $this->authorize('view', $role);
+
         $findData = Role::with(['permissions'])->find($role->id);
 
         $data = [
@@ -73,9 +81,11 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        $permissions = Permission::all();
+        $this->authorize('update', $role);
 
-        $findData = Role::with(['permissions'])->find($role->id);
+        $permissions = Permission::with(['roles'])->get();
+
+        $findData = $role->load('permissions');
 
         $data = [
             'role' => $findData,
@@ -90,6 +100,8 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
+        $this->authorize('update', $role);
+
         $role->update([
             'name' => $request->name,
         ]);
@@ -108,6 +120,8 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        $this->authorize('delete', $role);
+
         $role->delete();
 
         return redirect()->route('roles.index')->with('success', 'Role deleted successfully');
@@ -115,8 +129,10 @@ class RoleController extends Controller
 
     public function manageAccessRole()
     {
-        $roles = Role::all();
-        $permissions = Permission::all();
+        $this->authorize('update', Role::class);
+
+        $roles = Role::with(['permissions'])->get();
+        $permissions = Permission::with(['roles'])->get();
 
         $data = [
             'roles' => $roles,
@@ -128,7 +144,9 @@ class RoleController extends Controller
 
     public function assignAccessRole(Request $request)
     {
-        $role = Role::find($request->role_id);
+        $this->authorize('update', Role::class);
+
+        $role = Role::with(['permissions'])->find($request->role_id);
         $role->permissions()->sync($request->permissions);
 
         return redirect()->route('roles.access')->with('success', 'Role permissions updated successfully');
@@ -136,6 +154,8 @@ class RoleController extends Controller
 
     public function getData(Request $request)
     {
+        $this->authorize('data-role', Role::class);
+
         $perPage = $request->input('perPage', null);
         $page = $request->input('page', null);
         $globalSearch = $request->input('globalSearch', '');
@@ -143,6 +163,7 @@ class RoleController extends Controller
         $orderBy = $request->input('orderBy', 'id');
 
         $query = Role::query()
+            ->with(['permissions'])
             ->latest()
             ->when($globalSearch, function ($query, $search) {
                 return $query->where('name', 'like', "%{$search}%");

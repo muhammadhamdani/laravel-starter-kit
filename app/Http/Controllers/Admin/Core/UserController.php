@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin\Core;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Models\Role;
-use App\Models\User;
+use App\Models\Core\Role;
+use App\Models\Core\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -19,6 +19,8 @@ class UserController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', User::class);
+
         $data = [];
 
         return Inertia::render('admin/core/users/list', $data);
@@ -29,7 +31,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = Role::all();
+        $this->authorize('create', User::class);
+
+        $roles = Role::with(['permissions'])->all();
 
         $data = [
             'roles' => $roles
@@ -43,6 +47,8 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
+        $this->authorize('create', User::class);
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -62,7 +68,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $roles = Role::all();
+        $this->authorize('view', $user);
+
+        $roles = Role::with(['permissions'])->all();
 
         $findData = User::with(['roles'])->find($user->id);
 
@@ -79,7 +87,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $roles = Role::all();
+        $this->authorize('update', $user);
+
+        $roles = Role::with(['permissions'])->all();
 
         $findData = User::with(['roles'])->find($user->id);
 
@@ -96,6 +106,8 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        $this->authorize('update', $user);
+
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
@@ -121,6 +133,8 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
+
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'User deleted successfully');
@@ -128,6 +142,8 @@ class UserController extends Controller
 
     public function verify(Request $request, string $id)
     {
+        $this->authorize('verify-user', User::class);
+
         $user = User::find($id);
 
         if (!$user) {
@@ -142,6 +158,8 @@ class UserController extends Controller
 
     public function getData(Request $request)
     {
+        $this->authorize('data-user', User::class);
+
         $perPage = $request->input('perPage', 10);
         $page = $request->input('page', 1);
         $globalSearch = $request->input('globalSearch', '');
