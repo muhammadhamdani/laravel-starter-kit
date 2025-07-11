@@ -163,31 +163,6 @@ class RoleController extends Controller
         return redirect()->route('roles.index')->with('success', 'Role deleted successfully');
     }
 
-    public function manageAccessRole()
-    {
-        $this->authorize('update', Role::class);
-
-        $roles = Role::with(['permissions'])->get();
-        $permissions = Permission::with(['roles'])->get();
-
-        $data = [
-            'roles' => $roles,
-            'permissions' => $permissions
-        ];
-
-        return Inertia::render('admin/core/roles/access', $data);
-    }
-
-    public function assignAccessRole(Request $request)
-    {
-        $this->authorize('update', Role::class);
-
-        $role = Role::with(['permissions'])->find($request->role_id);
-        $role->permissions()->sync($request->permissions);
-
-        return redirect()->route('roles.access')->with('success', 'Role permissions updated successfully');
-    }
-
     public function getData(Request $request)
     {
         $this->authorize('data-role', Role::class);
