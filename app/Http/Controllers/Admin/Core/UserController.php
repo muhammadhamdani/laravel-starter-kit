@@ -70,7 +70,7 @@ class UserController extends Controller
     {
         $this->authorize('view', $user);
 
-        $roles = Role::with(['permissions'])->all();
+        $roles = Role::with(['permissions'])->get();
 
         $findData = User::with(['roles'])->find($user->id);
 
@@ -89,7 +89,7 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
 
-        $roles = Role::with(['permissions'])->all();
+        $roles = Role::with(['permissions'])->get();
 
         $findData = User::with(['roles'])->find($user->id);
 

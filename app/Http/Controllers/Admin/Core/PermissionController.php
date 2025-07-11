@@ -9,9 +9,12 @@ use App\Models\Core\Permission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
+use App\Traits\LogActivity;
 
 class PermissionController extends Controller
 {
+    use LogActivity;
+
     /**
      * Display a listing of the resource.
      */
@@ -50,6 +53,12 @@ class PermissionController extends Controller
         $permission = Permission::create([
             'name' => $request->name,
         ]);
+
+        if ($permission) {
+            $this->logSuccess('create-permission', "Created Permission: {$permission->name}", ['permission_id' => $permission->id]);
+        } else {
+            $this->logError('create-permission', "Failed to create permission: {$permission->name}", ['permission_id' => $permission->id]);
+        }
 
         if ($request->saveBack) {
             return redirect()->route('permissions.index')->with('success', 'Permission created successfully');
@@ -100,6 +109,12 @@ class PermissionController extends Controller
         $permission->update([
             'name' => $request->name,
         ]);
+
+        if ($permission) {
+            $this->logSuccess('update-permission', "Update Permission: {$permission->name}", ['permission_id' => $permission->id]);
+        } else {
+            $this->logError('update-permission', "Failed to update permission: {$permission->name}", ['permission_id' => $permission->id]);
+        }
 
         if ($request->saveBack) {
             return redirect()->route('permissions.index')->with('success', 'Permission updated successfully');

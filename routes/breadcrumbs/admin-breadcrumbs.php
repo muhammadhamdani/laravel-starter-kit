@@ -98,7 +98,7 @@ Breadcrumbs::for(
 Breadcrumbs::for(
     'roles.data',
     fn($trail) =>
-    $trail->parent('roles.index')->push('roles Data', route('roles.data'))
+    $trail->parent('roles.index')->push('Roles Data', route('roles.data'))
 );
 
 Breadcrumbs::for(

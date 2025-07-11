@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\Admin\Core\PermissionController;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Opcodes\LogViewer\Facades\LogViewer;
 use App\Http\Controllers\Admin\Core\RoleController;
 use App\Http\Controllers\Admin\Core\UserController;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\Admin\Core\PermissionController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -28,6 +29,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('users/data', [UserController::class, 'getData'])->name('users.data');
         Route::resource('users', UserController::class);
     });
+});
+
+Route::middleware(['auth', 'role:Admin'])->group(function () {
+    Route::view('/log-viewer/{any?}', 'log-viewer::index')
+        ->where('any', '.*')
+        ->name('log-viewer');
 });
 
 require __DIR__ . '/settings.php';
