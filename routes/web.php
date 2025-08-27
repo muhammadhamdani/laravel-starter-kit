@@ -20,10 +20,9 @@ use App\Http\Controllers\Admin\Core\PermissionController;
 |
 */
 
+Route::redirect('/', 'dashboard')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::redirect('/', 'dashboard');
-
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('core')->group(function () {
