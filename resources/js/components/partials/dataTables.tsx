@@ -75,7 +75,7 @@ export const DataTableProvider = ({
         getFilteredRowModel: getFilteredRowModel(),
         getSortedRowModel: getSortedRowModel(),
         onSortingChange: setSorting,
-        onPaginationChange: (updater) => {
+        onPaginationChange: (updater: any) => {
             const newState =
                 typeof updater === 'function'
                     ? updater({
