@@ -205,10 +205,15 @@ export const DataTableButton = () => {
             return;
         }
 
-        await axios.post(`${url}/verify`, { ids: selectedRows }).then(() => {
-            toast.success('Data berhasil diverifikasi');
-            fetchData();
-        });
+        await axios
+            .post(`${url}/verify`, { ids: selectedRows })
+            .then(() => {
+                toast.success('Data berhasil diverifikasi');
+                fetchData();
+            })
+            .finally(() => {
+                table.resetRowSelection();
+            });
     };
 
     const initialButtons = useMemo(
