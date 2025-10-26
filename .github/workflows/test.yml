@@ -1,0 +1,84 @@
+name: Test & Build (Laravel Inertia)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup PHP (latest stable version)
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 'latest'
+          extensions: mbstring, bcmath, intl, pdo_sqlite, sqlite3, curl, dom, fileinfo
+          tools: composer:v2
+          coverage: none
+
+      # 3️⃣ Cache Composer dependencies
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+
+      # 4️⃣ Install Composer dependencies
+      - name: Install PHP dependencies
+        run: composer install --no-progress --no-interaction --prefer-dist
+
+      # 5️⃣ Setup Node.js (latest LTS or stable)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+          cache: 'yarn'
+
+      # 6️⃣ Cache Yarn dependencies
+      - name: Cache Yarn
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.yarn/cache
+            node_modules
+          key: yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: yarn-
+
+      # 7️⃣ Install Node dependencies
+      - name: Install Node dependencies
+        run: yarn install --frozen-lockfile
+
+      # 8️⃣ Build frontend assets (Vite + Inertia)
+      - name: Build frontend
+        run: yarn build
+
+      # 9️⃣ Prepare Laravel environment
+      - name: Prepare Environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      # 🔟 Setup SQLite Database
+      - name: Setup SQLite
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+
+      # 11️⃣ Run migrations & tests
+      - name: Run tests
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: |
+          php artisan migrate --force
+          php artisan test --parallel
