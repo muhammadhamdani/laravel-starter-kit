@@ -67,7 +67,7 @@ class PermissionController extends Controller
         }
 
         if ($request->saveBack) {
-            return redirect()->route('permissions.index')->with('success', 'Permission created successfully');
+            return redirect()->route('admin.core.permissions.index')->with('success', 'Permission created successfully');
         }
 
         return redirect()->back()->with('success', 'Permission created successfully');
@@ -132,7 +132,7 @@ class PermissionController extends Controller
         }
 
         if ($request->saveBack) {
-            return redirect()->route('permissions.index')->with('success', 'Permission updated successfully');
+            return redirect()->route('admin.core.permissions.index')->with('success', 'Permission updated successfully');
         }
 
         return redirect()->back()->with('success', 'Permission updated successfully');
@@ -147,7 +147,7 @@ class PermissionController extends Controller
 
         $permission->delete();
 
-        return redirect()->route('permissions.index')->with('success', 'Permission deleted successfully');
+        return redirect()->route('admin.core.permissions.index')->with('success', 'Permission deleted successfully');
     }
 
     public function getData(Request $request)

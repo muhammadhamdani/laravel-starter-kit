@@ -4,7 +4,6 @@ namespace App\Policies\Core;
 
 use App\Models\Core\User;
 use App\Models\Core\User as UserModel;
-use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
@@ -71,7 +70,7 @@ class UserPolicy
     {
         return $user->hasPermissionTo('data-user');
     }
-    
+
     public function verify(User $user, UserModel $userModel): bool
     {
         return $user->hasPermissionTo('verify-user');

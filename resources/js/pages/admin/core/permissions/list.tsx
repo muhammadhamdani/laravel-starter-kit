@@ -1,16 +1,6 @@
-import {
-    DataTableComponent,
-    DataTableProvider,
-} from '@/components/partials/dataTables-component';
+import { DataTableComponent, DataTableProvider } from '@/components/partials/dataTables';
 import AppLayout from '@/layouts/app-layout';
-import permissions from '@/routes/admin/core/permissions';
-import {
-    renderRowAction,
-    renderRowCellCheckbox,
-    renderRowDate,
-    renderRowHeader,
-    renderRowHeaderCheckbox,
-} from '@/utils/material-table';
+import { renderRowAction, renderRowCellCheckbox, renderRowDate, renderRowHeader, renderRowHeaderCheckbox } from '@/utils/material-table';
 import { Head } from '@inertiajs/react';
 import { SortingState } from '@tanstack/react-table';
 import axios from 'axios';
@@ -28,10 +18,7 @@ export default function ListPage() {
 
     const [pagination, setPagination] = useState({
         page: 1,
-        perPage:
-            savedPageSize && !isNaN(parseInt(savedPageSize))
-                ? parseInt(savedPageSize)
-                : 10,
+        perPage: savedPageSize && !isNaN(parseInt(savedPageSize)) ? parseInt(savedPageSize) : 10,
         total: 0,
         from: 0,
         to: 0,
@@ -42,7 +29,7 @@ export default function ListPage() {
 
         setIsLoading(true);
         try {
-            const response = await axios.get(permissions.data().url, {
+            const response = await axios.get(route('permissions.data'), {
                 params: {
                     page: pagination.page,
                     perPage: pagination.perPage,
@@ -67,13 +54,7 @@ export default function ListPage() {
         } finally {
             setIsLoading(false);
         }
-    }, [
-        pagination.page,
-        pagination.perPage,
-        globalFilter,
-        sorting,
-        filterValue,
-    ]);
+    }, [pagination.page, pagination.perPage, globalFilter, sorting, filterValue]);
 
     useEffect(() => {
         fetchData();
@@ -89,10 +70,7 @@ export default function ListPage() {
             {
                 header: (info: any) => 'No',
                 accessorKey: 'id',
-                cell: (info: any) =>
-                    (pagination.page - 1) * pagination.perPage +
-                    info.row.index +
-                    1,
+                cell: (info: any) => (pagination.page - 1) * pagination.perPage + info.row.index + 1,
             },
             {
                 header: (info: any) => renderRowHeader(info, 'Name'),
@@ -132,20 +110,20 @@ export default function ListPage() {
         <AppLayout>
             <Head title="Permissions List" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="relative flex min-h-screen flex-1 flex-col space-y-4 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
+                <div className="border-sidebar-border/70 dark:border-sidebar-border relative flex min-h-[100vh] flex-1 flex-col space-y-4 overflow-hidden rounded-xl border md:min-h-min">
                     <DataTableProvider
-                    // columns={columns}
-                    // data={data}
-                    // pagination={pagination}
-                    // setPagination={setPagination}
-                    // globalFilter={globalFilter}
-                    // setGlobalFilter={setGlobalFilter}
-                    // sorting={sorting}
-                    // setSorting={setSorting}
-                    // buttonItems={buttonItems}
-                    // fetchData={fetchData}
-                    // isLoading={isLoading}
-                    // formatDataExport={formatDataExport}
+                        columns={columns}
+                        data={data}
+                        pagination={pagination}
+                        setPagination={setPagination}
+                        globalFilter={globalFilter}
+                        setGlobalFilter={setGlobalFilter}
+                        sorting={sorting}
+                        setSorting={setSorting}
+                        buttonItems={buttonItems}
+                        fetchData={fetchData}
+                        isLoading={isLoading}
+                        formatDataExport={formatDataExport}
                     >
                         <DataTableComponent />
                     </DataTableProvider>

@@ -3,6 +3,11 @@
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 
+// Dashboard (root)
+Breadcrumbs::for('admin.dashboard', function (BreadcrumbTrail $trail) {
+    $trail->push('Admin', route('admin.dashboard'));
+});
+
 // Users
 Breadcrumbs::for(
     'admin.core.users.index',
@@ -11,58 +16,27 @@ Breadcrumbs::for(
 );
 
 Breadcrumbs::for(
-    'admin.core.users.create',
+    'users.create',
     fn($trail) =>
-    $trail->parent('admin.core.users.index')->push('Create', route('admin.core.users.create'))
+    $trail->parent('admin.core.users.index')->push('Create', route('users.create'))
 );
 
 Breadcrumbs::for(
-    'admin.core.users.show',
+    'users.show',
     fn($trail, $user) =>
-    $trail->parent('admin.core.users.index')->push($user->name, route('admin.core.users.show', $user))
+    $trail->parent('admin.core.users.index')->push($user->name, route('users.show', $user))
 );
 
 Breadcrumbs::for(
-    'admin.core.users.edit',
+    'users.edit',
     fn($trail, $user) =>
-    $trail->parent('admin.core.users.show', $user)->push('Edit', route('admin.core.users.edit', $user))
+    $trail->parent('users.show', $user)->push('Edit', route('users.edit', $user))
 );
 
 Breadcrumbs::for(
-    'admin.core.users.data',
+    'users.data',
     fn($trail) =>
-    $trail->parent('admin.core.users.index')->push('Users Data', route('admin.core.users.data'))
-);
-
-// Roles
-Breadcrumbs::for(
-    'admin.core.roles.index',
-    fn($trail) =>
-    $trail->parent('admin.dashboard')->push('Roles', route('admin.core.roles.index'))
-);
-
-Breadcrumbs::for(
-    'admin.core.roles.create',
-    fn($trail) =>
-    $trail->parent('admin.core.roles.index')->push('Create', route('admin.core.roles.create'))
-);
-
-Breadcrumbs::for(
-    'admin.core.roles.show',
-    fn($trail, $permission) =>
-    $trail->parent('admin.core.roles.index')->push($permission->name, route('admin.core.roles.show', $permission))
-);
-
-Breadcrumbs::for(
-    'admin.core.roles.edit',
-    fn($trail, $permission) =>
-    $trail->parent('admin.core.roles.show', $permission)->push('Edit', route('admin.core.roles.edit', $permission))
-);
-
-Breadcrumbs::for(
-    'admin.core.roles.data',
-    fn($trail) =>
-    $trail->parent('admin.core.roles.index')->push('Roles Data', route('admin.core.roles.data'))
+    $trail->parent('admin.core.users.index')->push('Users Data', route('users.data'))
 );
 
 // Permissions
@@ -73,35 +47,62 @@ Breadcrumbs::for(
 );
 
 Breadcrumbs::for(
-    'admin.core.permissions.create',
+    'permissions.create',
     fn($trail) =>
-    $trail->parent('admin.core.permissions.index')->push('Create', route('admin.core.permissions.create'))
+    $trail->parent('admin.core.permissions.index')->push('Create', route('permissions.create'))
 );
 
 Breadcrumbs::for(
-    'admin.core.permissions.show',
+    'permissions.show',
     fn($trail, $permission) =>
-    $trail->parent('admin.core.permissions.index')->push($permission->name, route('admin.core.permissions.show', $permission))
+    $trail->parent('admin.core.permissions.index')->push($permission->name, route('permissions.show', $permission))
 );
 
 Breadcrumbs::for(
-    'admin.core.permissions.edit',
+    'permissions.edit',
     fn($trail, $permission) =>
-    $trail->parent('admin.core.permissions.show', $permission)->push('Edit', route('admin.core.permissions.edit', $permission))
+    $trail->parent('permissions.show', $permission)->push('Edit', route('permissions.edit', $permission))
 );
 
 Breadcrumbs::for(
-    'admin.core.permissions.data',
+    'permissions.data',
     fn($trail) =>
-    $trail->parent('admin.core.permissions.index')->push('Permissions Data', route('admin.core.permissions.data'))
+    $trail->parent('admin.core.permissions.index')->push('Permissions Data', route('permissions.data'))
 );
 
-// Dashboard (root)
-Breadcrumbs::for('admin.', function (BreadcrumbTrail $trail) {
-    $trail->push('Admin', route('admin.'));
-});
+// Roles
+Breadcrumbs::for(
+    'admin.core.roles.index',
+    fn($trail) =>
+    $trail->parent('admin.dashboard')->push('Roles', route('admin.core.roles.index'))
+);
 
-// Dashboard (root)
-Breadcrumbs::for('admin.dashboard', function (BreadcrumbTrail $trail) {
-    $trail->push('Admin', route('admin.dashboard'));
-});
+Breadcrumbs::for(
+    'roles.create',
+    fn($trail) =>
+    $trail->parent('admin.core.roles.index')->push('Create', route('roles.create'))
+);
+
+Breadcrumbs::for(
+    'roles.show',
+    fn($trail, $permission) =>
+    $trail->parent('admin.core.roles.index')->push($permission->name, route('roles.show', $permission))
+);
+
+Breadcrumbs::for(
+    'roles.edit',
+    fn($trail, $permission) =>
+    $trail->parent('roles.show', $permission)->push('Edit', route('roles.edit', $permission))
+);
+
+Breadcrumbs::for(
+    'roles.data',
+    fn($trail) =>
+    $trail->parent('admin.core.roles.index')->push('Roles Data', route('roles.data'))
+);
+
+Breadcrumbs::for(
+    'roles.access',
+    fn($trail) =>
+    $trail->parent('admin.core.roles.index')->push('Roles Access', route('roles.access'))
+);

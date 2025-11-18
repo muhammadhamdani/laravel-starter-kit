@@ -4,7 +4,6 @@ namespace App\Policies\Core;
 
 use App\Models\Core\Permission;
 use App\Models\Core\User;
-use Illuminate\Auth\Access\Response;
 
 class PermissionPolicy
 {

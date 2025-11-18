@@ -2,13 +2,14 @@ import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
+import { Toaster } from '@/components/ui/sonner';
 import { SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { useEffect, type PropsWithChildren } from 'react';
-import { toast, Toaster } from 'sonner';
+import { toast } from 'sonner';
 
-export default function AppSidebarLayout({ children }: PropsWithChildren) {
-    const { flash } = usePage<SharedData>().props;
+export default function AppSidebarLayout({ children }: PropsWithChildren<{}>) {
+    const { flash, breadcrumbs } = usePage<SharedData>().props;
 
     useEffect(() => {
         if (flash?.success) {
@@ -23,8 +24,8 @@ export default function AppSidebarLayout({ children }: PropsWithChildren) {
     return (
         <AppShell variant="sidebar">
             <AppSidebar />
-            <AppContent variant="sidebar" className="overflow-x-hidden">
-                <AppSidebarHeader />
+            <AppContent variant="sidebar">
+                <AppSidebarHeader breadcrumbs={breadcrumbs} />
                 {children}
                 <Toaster position="top-right" richColors />
             </AppContent>

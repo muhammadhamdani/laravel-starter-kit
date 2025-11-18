@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Core\Role;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Core\User;
 use App\Models\Core\Permission;
 use Illuminate\Database\Seeder;
@@ -43,10 +44,10 @@ class DatabaseSeeder extends Seeder
         ])->each(fn($permission) => Permission::create($permission)->assignRole('Administrators'));
 
         User::create([
-            'name' => 'Super User',
+            'name' => 'Administrator',
             'email' => 'muhammadhamdani017@gmail.com',
-            'password' => Hash::make(uniqid()),
             'email_verified_at' => now(),
+            'password' => Hash::make(uniqid()),
         ])->assignRole('Administrators');
     }
 }

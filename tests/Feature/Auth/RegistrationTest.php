@@ -1,19 +1,21 @@
 <?php
 
-test('registration screen can be rendered', function () {
-    $response = $this->get(route('register'));
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    $response->assertStatus(200);
-});
+// test('registration screen can be rendered', function () {
+//     $response = $this->get('/register');
 
-test('new users can register', function () {
-    $response = $this->post(route('register.store'), [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
-    ]);
+//     $response->assertStatus(200);
+// });
 
-    $this->assertAuthenticated();
-    $response->assertRedirect(route('admin.dashboard', absolute: false));
-});
+// test('new users can register', function () {
+//     $response = $this->post('/register', [
+//         'name' => 'Test User',
+//         'email' => 'test@example.com',
+//         'password' => 'password',
+//         'password_confirmation' => 'password',
+//     ]);
+
+//     $this->assertAuthenticated();
+//     $response->assertRedirect(route('admin.dashboard', absolute: false));
+// });

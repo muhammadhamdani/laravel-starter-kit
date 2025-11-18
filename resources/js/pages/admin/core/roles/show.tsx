@@ -8,9 +8,7 @@ export default function DetailPage() {
 
     const groupedPermissions = Object.values(
         role.permissions.reduce((acc: any, permission: any) => {
-            const match = permission.name.match(
-                /^(view|create|update|delete|data|restore|force-delete|verify)-(.*)$/,
-            );
+            const match = permission.name.match(/^(view|create|update|delete|data|restore|force-delete|verify)-(.*)$/);
             if (!match) return acc;
 
             const subject = match[2];
@@ -32,95 +30,51 @@ export default function DetailPage() {
         <AppLayout>
             <Head title="Role Detail" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="relative min-h-screen flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
+                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
                     <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 md:p-6">
                         <div className="flex flex-col space-y-2">
-                            <Label
-                                htmlFor="name"
-                                className="text-sm font-semibold"
-                            >
+                            <Label htmlFor="name" className="text-sm font-semibold">
                                 Name
                             </Label>
                             <p className="text-sm">{role.name}</p>
                         </div>
                         <div className="flex flex-col space-y-2">
-                            <Label
-                                htmlFor="created_at"
-                                className="text-sm font-semibold"
-                            >
+                            <Label htmlFor="created_at" className="text-sm font-semibold">
                                 Created At
                             </Label>
-                            <p className="text-sm">
-                                {moment(role.created_at)
-                                    .tz('Asia/Jakarta')
-                                    .format('DD MMMM YYYY')}
-                            </p>
+                            <p className="text-sm">{moment(role.created_at).tz('Asia/Jakarta').format('DD MMMM YYYY')}</p>
                         </div>
                         <div className="flex flex-col space-y-2">
-                            <Label
-                                htmlFor="updated_at"
-                                className="text-sm font-semibold"
-                            >
+                            <Label htmlFor="updated_at" className="text-sm font-semibold">
                                 Updated At
                             </Label>
-                            <p className="text-sm">
-                                {moment(role.updated_at)
-                                    .tz('Asia/Jakarta')
-                                    .format('DD MMMM YYYY')}
-                            </p>
+                            <p className="text-sm">{moment(role.updated_at).tz('Asia/Jakarta').format('DD MMMM YYYY')}</p>
                         </div>
                     </div>
 
                     <div className="flex flex-col space-y-4 px-4">
-                        <label className="text-sm font-semibold">
-                            Access Role
-                        </label>
+                        <label className="text-sm font-semibold">Access Role</label>
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                             {groupedPermissions.map((group: any) => {
-                                const groupIds = group.permissions.map(
-                                    (p: any) => p.id,
-                                );
-                                const allChecked = groupIds.every((id: any) =>
-                                    role.permissions.some(
-                                        (p: any) => p.id === id,
-                                    ),
-                                );
+                                const groupIds = group.permissions.map((p: any) => p.id);
+                                const allChecked = groupIds.every((id: any) => role.permissions.some((p: any) => p.id === id));
 
                                 return (
-                                    <div
-                                        key={group.group}
-                                        className="rounded border p-4"
-                                    >
+                                    <div key={group.group} className="rounded border p-4">
                                         <div className="mb-2 flex items-center justify-between">
-                                            <h3 className="text-sm font-semibold capitalize">
-                                                {group.group.replace(
-                                                    /[-_]/g,
-                                                    ' ',
-                                                )}
-                                            </h3>
+                                            <h3 className="text-sm font-semibold capitalize">{group.group.replace(/[-_]/g, ' ')}</h3>
                                         </div>
                                         <div className="space-y-1">
-                                            {group.permissions.map(
-                                                (permission: any) => (
-                                                    <label
-                                                        key={permission.id}
-                                                        className="flex items-center space-x-2"
-                                                    >
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={role.permissions.some(
-                                                                (p: any) =>
-                                                                    p.id ===
-                                                                    permission.id,
-                                                            )}
-                                                            disabled
-                                                        />
-                                                        <span className="text-sm">
-                                                            {permission.name}
-                                                        </span>
-                                                    </label>
-                                                ),
-                                            )}
+                                            {group.permissions.map((permission: any) => (
+                                                <label key={permission.id} className="flex items-center space-x-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={role.permissions.some((p: any) => p.id === permission.id)}
+                                                        disabled
+                                                    />
+                                                    <span className="text-sm">{permission.name}</span>
+                                                </label>
+                                            ))}
                                         </div>
                                     </div>
                                 );
