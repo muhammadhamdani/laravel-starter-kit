@@ -2,14 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogDescription, DialogOverlay, DialogTitle } from '@/components/ui/dialog';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
 import { BadgeCheckIcon, BadgeXIcon, ChevronDownIcon, ChevronsUpDownIcon, ChevronUpIcon, MoreHorizontal } from 'lucide-react';
@@ -36,14 +29,39 @@ export const renderRowDateTime = (value: any) => {
     });
 };
 
+export const renderRowImage = (value: any, className: string) => {
+    if (!value) {
+        return <div className="text-gray-400 italic">No Image</div>;
+    }
+
+    return (
+        <img
+            src={value}
+            alt="Image"
+            className={`rounded-md object-cover ${className}`}
+            width={40}
+            height={40}
+            loading="lazy"
+        />
+    );
+};
+
 export const renderRowStatus = (value: any) => {
     return value ? (
-        <Badge className="cursor-pointer bg-blue-500 text-white dark:bg-blue-600" variant="default" color="success">
+        <Badge
+            className="cursor-pointer bg-blue-500 text-white dark:bg-blue-600"
+            variant="default"
+            color="success"
+        >
             <BadgeCheckIcon />
             Verified
         </Badge>
     ) : (
-        <Badge className="cursor-pointer bg-red-500 text-white dark:bg-red-600" variant="destructive" color="danger">
+        <Badge
+            className="cursor-pointer bg-red-500 text-white dark:bg-red-600"
+            variant="destructive"
+            color="danger"
+        >
             <BadgeXIcon />
             Not Verified
         </Badge>
@@ -51,7 +69,13 @@ export const renderRowStatus = (value: any) => {
 };
 
 export const renderRowCellCheckbox = (info: any) => {
-    return <Checkbox checked={info.row.getIsSelected()} onCheckedChange={(value) => info.row.toggleSelected(!!value)} aria-label="Select row" />;
+    return (
+        <Checkbox
+            checked={info.row.getIsSelected()}
+            onCheckedChange={(value) => info.row.toggleSelected(!!value)}
+            aria-label="Select row"
+        />
+    );
 };
 
 export const renderRowAction = (info: any, fetchData: () => void) => {
@@ -88,25 +112,49 @@ export const renderRowAction = (info: any, fetchData: () => void) => {
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => router.visit(`${url}/${data.id}`)}>Detail</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.visit(`${url}/${data.id}/edit`)}>Edit</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleActionDelete(data.id)}>Delete</DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => router.visit(`${url}/${data.id}`)}
+                    >
+                        Detail
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => router.visit(`${url}/${data.id}/edit`)}
+                    >
+                        Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => handleActionDelete(data.id)}
+                    >
+                        Delete
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
 
             {openModal && (
-                <Dialog open={openModal} onOpenChange={(open) => setOpenModal(open)}>
+                <Dialog
+                    open={openModal}
+                    onOpenChange={(open) => setOpenModal(open)}
+                >
                     <DialogOverlay className="fixed inset-0 bg-black opacity-30" />
                     <DialogContent className="">
-                        <DialogTitle className="text-xl font-semibold">Confirm Deletion</DialogTitle>
+                        <DialogTitle className="text-xl font-semibold">
+                            Confirm Deletion
+                        </DialogTitle>
                         <DialogDescription className="mt-2">
-                            Are you sure you want to delete this item? This action cannot be undone.
+                            Are you sure you want to delete this item? This
+                            action cannot be undone.
                         </DialogDescription>
                         <div className="mt-4 flex justify-end space-x-4">
-                            <Button variant="outline" onClick={() => setOpenModal(false)}>
+                            <Button
+                                variant="outline"
+                                onClick={() => setOpenModal(false)}
+                            >
                                 Cancel
                             </Button>
-                            <Button variant="destructive" onClick={() => handleDelete(data.id, url)}>
+                            <Button
+                                variant="destructive"
+                                onClick={() => handleDelete(data.id, url)}
+                            >
                                 Delete
                             </Button>
                         </div>
@@ -126,14 +174,19 @@ export const renderRowHeader = (info: any, title: string) => {
         if (isSorted === 'desc') return <ChevronDownIcon className="h-5 w-5" />;
 
         if (!isSorted && columnId === 'id') {
-            return <ChevronDownIcon className="text-muted-foreground h-5 w-5" />;
+            return (
+                <ChevronDownIcon className="h-5 w-5 text-muted-foreground" />
+            );
         }
 
-        return <ChevronsUpDownIcon className="text-muted-foreground h-5 w-5" />;
+        return <ChevronsUpDownIcon className="h-5 w-5 text-muted-foreground" />;
     };
 
     return (
-        <div className="flex cursor-pointer flex-row items-center justify-between space-x-4 px-3" onClick={info.column.getToggleSortingHandler()}>
+        <div
+            className="flex cursor-pointer flex-row items-center justify-between space-x-4 px-3"
+            onClick={info.column.getToggleSortingHandler()}
+        >
             <span>{title}</span>
             {renderSortIcon()}
         </div>
@@ -143,8 +196,13 @@ export const renderRowHeader = (info: any, title: string) => {
 export const renderRowHeaderCheckbox = (info: any) => {
     return (
         <Checkbox
-            checked={info.table.getIsAllPageRowsSelected() || (info.table.getIsSomePageRowsSelected() && 'indeterminate')}
-            onCheckedChange={(value) => info.table.toggleAllPageRowsSelected(!!value)}
+            checked={
+                info.table.getIsAllPageRowsSelected() ||
+                (info.table.getIsSomePageRowsSelected() && 'indeterminate')
+            }
+            onCheckedChange={(value) =>
+                info.table.toggleAllPageRowsSelected(!!value)
+            }
             aria-label="Select all"
         />
     );

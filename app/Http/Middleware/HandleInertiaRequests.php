@@ -3,10 +3,9 @@
 namespace App\Http\Middleware;
 
 use Inertia\Middleware;
-use Tighten\Ziggy\Ziggy;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 
 class HandleInertiaRequests extends Middleware
@@ -41,6 +40,11 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
+        $user = $request->user();
+        $roles = $user?->roles->pluck('name')->toArray() ?? [];
+        $rawPermissions = $user?->roles->flatMap->resolvedPermissions->pluck('name') ?? collect();
+        $allPermissions = $user?->resolvedPermissions() ?? [];
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -55,13 +59,26 @@ class HandleInertiaRequests extends Middleware
                 'success' => $request->session()->get('success'),
                 'error'   => $request->session()->get('error'),
             ],
-            'ziggy' => fn(): array => [
-                ...(new Ziggy)->toArray(),
-                'location' => $request->url(),
-            ],
             'breadcrumbs' => $request->isMethod('get')
                 ? Breadcrumbs::generate()
                 : [],
+            'wayfinder' => fn() => [
+                'routes' => collect(Route::getRoutes())
+                    ->map(function ($route) {
+                        return [
+                            'name'   => $route->getName(),
+                            'uri'    => $route->uri(),
+                            'method' => $route->methods()[0] ?? 'GET',
+                            'action' => $route->getActionName(),
+                            // Optional: guard untuk role-permission future
+                            'middleware' => $route->gatherMiddleware(),
+                        ];
+                    })
+                    ->filter(fn($route) => $route['name'])
+                    ->values(),
+
+                'location' => $request->url(),
+            ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }
