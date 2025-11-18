@@ -8,8 +8,8 @@ use App\Traits\LogActivity;
 use Illuminate\Http\Request;
 use App\Models\Core\Permission;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreRoleRequest;
-use App\Http\Requests\UpdateRoleRequest;
+use App\Http\Requests\Core\StoreRoleRequest;
+use App\Http\Requests\Core\UpdateRoleRequest;
 
 class RoleController extends Controller
 {
