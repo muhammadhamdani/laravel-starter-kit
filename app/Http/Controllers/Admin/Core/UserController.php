@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin\Core;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\Core\StoreUserRequest;
+use App\Http\Requests\Core\UpdateUserRequest;
 use App\Models\Core\Role;
 use App\Models\Core\User;
 use App\Traits\LogActivity;
