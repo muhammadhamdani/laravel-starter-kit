@@ -7,8 +7,8 @@ use App\Models\Core\Role;
 use Illuminate\Http\Request;
 use App\Models\Core\Permission;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePermissionRequest;
-use App\Http\Requests\UpdatePermissionRequest;
+use App\Http\Requests\Core\StorePermissionRequest;
+use App\Http\Requests\Core\UpdatePermissionRequest;
 use App\Traits\LogActivity;
 
 class PermissionController extends Controller
