@@ -16,27 +16,27 @@ Breadcrumbs::for(
 );
 
 Breadcrumbs::for(
-    'users.create',
+    'admin.core.users.create',
     fn($trail) =>
-    $trail->parent('admin.core.users.index')->push('Create', route('users.create'))
+    $trail->parent('admin.core.users.index')->push('Create', route('admin.core.users.create'))
 );
 
 Breadcrumbs::for(
-    'users.show',
+    'admin.core.users.show',
     fn($trail, $user) =>
-    $trail->parent('admin.core.users.index')->push($user->name, route('users.show', $user))
+    $trail->parent('admin.core.users.index')->push($user->name, route('admin.core.users.show', $user))
 );
 
 Breadcrumbs::for(
-    'users.edit',
+    'admin.core.users.edit',
     fn($trail, $user) =>
-    $trail->parent('users.show', $user)->push('Edit', route('users.edit', $user))
+    $trail->parent('admin.core.users.show', $user)->push('Edit', route('admin.core.users.edit', $user))
 );
 
 Breadcrumbs::for(
-    'users.data',
+    'admin.core.users.data',
     fn($trail) =>
-    $trail->parent('admin.core.users.index')->push('Users Data', route('users.data'))
+    $trail->parent('admin.core.users.index')->push('Users Data', route('admin.core.users.data'))
 );
 
 // Permissions
@@ -47,27 +47,27 @@ Breadcrumbs::for(
 );
 
 Breadcrumbs::for(
-    'permissions.create',
+    'admin.core.permissions.create',
     fn($trail) =>
-    $trail->parent('admin.core.permissions.index')->push('Create', route('permissions.create'))
+    $trail->parent('admin.core.permissions.index')->push('Create', route('admin.core.permissions.create'))
 );
 
 Breadcrumbs::for(
-    'permissions.show',
+    'admin.core.permissions.show',
     fn($trail, $permission) =>
-    $trail->parent('admin.core.permissions.index')->push($permission->name, route('permissions.show', $permission))
+    $trail->parent('admin.core.permissions.index')->push($permission->name, route('admin.core.permissions.show', $permission))
 );
 
 Breadcrumbs::for(
-    'permissions.edit',
+    'admin.core.permissions.edit',
     fn($trail, $permission) =>
-    $trail->parent('permissions.show', $permission)->push('Edit', route('permissions.edit', $permission))
+    $trail->parent('admin.core.permissions.show', $permission)->push('Edit', route('admin.core.permissions.edit', $permission))
 );
 
 Breadcrumbs::for(
-    'permissions.data',
+    'admin.core.permissions.data',
     fn($trail) =>
-    $trail->parent('admin.core.permissions.index')->push('Permissions Data', route('permissions.data'))
+    $trail->parent('admin.core.permissions.index')->push('Permissions Data', route('admin.core.permissions.data'))
 );
 
 // Roles
@@ -78,31 +78,31 @@ Breadcrumbs::for(
 );
 
 Breadcrumbs::for(
-    'roles.create',
+    'admin.core.roles.create',
     fn($trail) =>
-    $trail->parent('admin.core.roles.index')->push('Create', route('roles.create'))
+    $trail->parent('admin.core.roles.index')->push('Create', route('admin.core.roles.create'))
 );
 
 Breadcrumbs::for(
-    'roles.show',
+    'admin.core.roles.show',
     fn($trail, $permission) =>
-    $trail->parent('admin.core.roles.index')->push($permission->name, route('roles.show', $permission))
+    $trail->parent('admin.core.roles.index')->push($permission->name, route('admin.core.roles.show', $permission))
 );
 
 Breadcrumbs::for(
-    'roles.edit',
+    'admin.core.roles.edit',
     fn($trail, $permission) =>
-    $trail->parent('roles.show', $permission)->push('Edit', route('roles.edit', $permission))
+    $trail->parent('admin.core.roles.show', $permission)->push('Edit', route('admin.core.roles.edit', $permission))
 );
 
 Breadcrumbs::for(
-    'roles.data',
+    'admin.core.roles.data',
     fn($trail) =>
-    $trail->parent('admin.core.roles.index')->push('Roles Data', route('roles.data'))
+    $trail->parent('admin.core.roles.index')->push('Roles Data', route('admin.core.roles.data'))
 );
 
 Breadcrumbs::for(
-    'roles.access',
+    'admin.core.roles.access',
     fn($trail) =>
-    $trail->parent('admin.core.roles.index')->push('Roles Access', route('roles.access'))
+    $trail->parent('admin.core.roles.index')->push('Roles Access', route('admin.core.roles.access'))
 );

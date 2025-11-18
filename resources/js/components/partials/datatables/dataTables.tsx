@@ -92,6 +92,7 @@ export const UseDataTable = () => useContext(DataTableContext);
 export const DataTableProvider = ({
     columns = [],
     filterValue,
+    setFilterValue,
     withAction = true,
     refreshData,
     setRefreshData,
@@ -328,6 +329,7 @@ export const DataTableProvider = ({
 interface DataTableProviderProps {
     columns: any;
     filterValue?: any;
+    setFilterValue?: any;
     withAction?: boolean;
     refreshData?: boolean;
     setRefreshData?: any;

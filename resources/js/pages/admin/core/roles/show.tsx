@@ -30,7 +30,7 @@ export default function DetailPage() {
         <AppLayout>
             <Head title="Role Detail" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
+                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-screen flex-1 overflow-hidden rounded-xl border md:min-h-min">
                     <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 md:p-6">
                         <div className="flex flex-col space-y-2">
                             <Label htmlFor="name" className="text-sm font-semibold">
