@@ -55,6 +55,6 @@ class SocialiteController extends Controller
 
         Auth::login($user);
 
-        return redirect()->intended(route('dashboard', absolute: false))->with('success', 'You are logged in!');
+        return redirect()->intended(route('admin.dashboard', absolute: false))->with('success', 'You are logged in!');
     }
 }
