@@ -68,11 +68,7 @@ class RoleController extends Controller
             ]);
         }
 
-        if ($request->saveBack) {
-            return redirect()->route('admin.core.roles.index')->with('success', 'Role created successfully');
-        }
-
-        return redirect()->back()->with('success', 'Role created successfully');
+        return redirect()->route('admin.core.roles.index')->with('success', 'Role Created Successfully');
     }
 
     /**
@@ -138,11 +134,7 @@ class RoleController extends Controller
             ]);
         }
 
-        if ($request->saveBack) {
-            return redirect()->route('admin.core.roles.index')->with('success', 'Role updated successfully');
-        }
-
-        return redirect()->back()->with('success', 'Role updated successfully');
+        return redirect()->route('admin.core.roles.index')->with('success', 'Role Updated Successfully');
     }
 
     /**
@@ -160,7 +152,7 @@ class RoleController extends Controller
             $this->logError('delete-role', "Failed to delete role: {$role->name}", ['role_id' => $role->id]);
         }
 
-        return redirect()->route('admin.core.roles.index')->with('success', 'Role deleted successfully');
+        return redirect()->route('admin.core.roles.index')->with('success', 'Role Deleted Successfully');
     }
 
     public function getData(Request $request)

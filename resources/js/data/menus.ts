@@ -1,4 +1,4 @@
-import { ChevronRight, CpuIcon } from 'lucide-react';
+import { ChevronRight, CpuIcon, MapIcon } from 'lucide-react';
 
 export const NavigationList = [
     {
@@ -27,6 +27,37 @@ export const NavigationList = [
                         href: route('admin.core.users.index'),
                         permission: 'view-user',
                         icon: ChevronRight,
+                    },
+                    {
+                        title: 'Regions',
+                        roles: ['Administrators'],
+                        icon: MapIcon,
+                        children: [
+                            {
+                                title: 'Provinces',
+                                href: route('admin.core.regions.provinces.index'),
+                                permission: 'view-region',
+                                icon: ChevronRight,
+                            },
+                            {
+                                title: 'Regencies',
+                                href: route('admin.core.regions.regencies.index'),
+                                permission: 'view-region',
+                                icon: ChevronRight,
+                            },
+                            {
+                                title: 'Districts',
+                                href: route('admin.core.regions.districts.index'),
+                                permission: 'view-region',
+                                icon: ChevronRight,
+                            },
+                            {
+                                title: 'Villages',
+                                href: route('admin.core.regions.villages.index'),
+                                permission: 'view-region',
+                                icon: ChevronRight,
+                            },
+                        ],
                     },
                 ],
             },

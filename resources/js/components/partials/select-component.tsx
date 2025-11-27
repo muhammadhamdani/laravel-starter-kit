@@ -1,12 +1,3 @@
-// import classNames from 'classnames';
-// import { Check, ChevronsUpDown, InfoIcon } from 'lucide-react';
-// import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-// import { Button } from '../ui/button';
-// import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../ui/command';
-// import { Label } from '../ui/label';
-// import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-
 import axios from 'axios';
 import classNames from 'classnames';
 import { Check, ChevronsUpDown, InfoIcon } from 'lucide-react';
@@ -16,93 +7,6 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Label } from '../ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-
-// export const SelectContext = createContext({});
-
-// export const UseSelect = () => useContext(SelectContext);
-
-// export const SelectProvider = ({
-//     multiple = false,
-//     dataSelected,
-//     handleOnChange,
-//     children,
-// }: {
-//     children: ReactNode;
-//     multiple?: boolean;
-//     handleOnChange?: (value: any) => void;
-//     dataSelected?: string | string[];
-// }) => {
-//     const [selected, setSelected] = useState(dataSelected !== undefined ? dataSelected : multiple ? [] : '');
-
-//     useEffect(() => {
-//         handleOnChange?.(selected);
-//     }, [selected]);
-
-//     const isSelected = (value: any) => {
-//         return multiple ? selected.includes(value) : selected === value;
-//     };
-
-//     const contextValue = { selected, setSelected, isSelected, multiple };
-
-//     return <SelectContext.Provider value={contextValue}>{children}</SelectContext.Provider>;
-// };
-
-// export function SelectComponent({ label, data, placeholder = 'Select option...' }: { label?: string; data: any[]; placeholder?: string }) {
-//     const [open, setOpen] = useState(false);
-//     const { selected, setSelected, isSelected, multiple }: any = UseSelect();
-
-//     const toggleValue = (value: any) => {
-//         if (multiple) {
-//             const current = selected;
-//             const updated = current.includes(value) ? current.filter((v: any) => v !== value) : [...current, value];
-//             setSelected(updated);
-//         } else {
-//             setSelected(value);
-//             setOpen(false);
-//         }
-//     };
-
-//     const displayLabel = multiple
-//         ? selected.length
-//             ? data
-//                   .filter((d: any) => selected.includes(d.value))
-//                   .map((d: any) => d.label)
-//                   .join(', ')
-//             : placeholder
-//         : selected
-//           ? (data.find((d) => d.value === selected)?.label ?? placeholder)
-//           : placeholder;
-
-//     return (
-//         <Popover open={open} onOpenChange={setOpen}>
-//             <div className="w-ful flex flex-col space-y-3">
-//                 {label && <Label>{label}</Label>}
-//                 <PopoverTrigger asChild>
-//                     <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
-//                         {displayLabel}
-//                         <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
-//                     </Button>
-//                 </PopoverTrigger>
-//             </div>
-//             <PopoverContent className="w-full p-0">
-//                 <Command>
-//                     <CommandInput placeholder="Search..." className="h-9" />
-//                     <CommandList>
-//                         <CommandEmpty>No option found.</CommandEmpty>
-//                         <CommandGroup>
-//                             {data.map((item: any) => (
-//                                 <CommandItem key={item.value} onSelect={() => toggleValue(item.value)} className="cursor-pointer">
-//                                     {item.label}
-//                                     <Check className={classNames('ml-auto h-4 w-4', isSelected(item.value) ? 'opacity-100' : 'opacity-0')} />
-//                                 </CommandItem>
-//                             ))}
-//                         </CommandGroup>
-//                     </CommandList>
-//                 </Command>
-//             </PopoverContent>
-//         </Popover>
-//     );
-// }
 
 export const SelectWithSearchComponent = ({
     data = [],
@@ -180,7 +84,7 @@ export const SelectWithSearchComponent = ({
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+                <PopoverContent className="w-(--radix-popover-trigger-width) p-0">
                     <Command>
                         <CommandInput placeholder="Search..." value={searchTerm} onValueChange={(val) => setSearchTerm(val)} className="h-9" />
                         <CommandList>
@@ -219,6 +123,77 @@ export const SelectWithSearchComponent = ({
                     <span>{helperText}</span>
                 </div>
             )}
+        </div>
+    );
+};
+
+export const SelectSearchComponent = ({ data, dataSelected, placeholder, label, handleOnChange }: SelectProps) => {
+    const [open, setOpen] = useState(false);
+    const [searchValue, setSearchValue] = useState('');
+
+    const filteredData = data?.filter((item) => item.label.toLowerCase().includes(searchValue.toLowerCase()));
+
+    return (
+        <div className="flex flex-col space-y-3">
+            {label && <Label>{label}</Label>}
+
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+                        {dataSelected ? data?.find((item) => item.value == dataSelected)?.label : placeholder}
+                        <ChevronsUpDown className="opacity-50" />
+                    </Button>
+                </PopoverTrigger>
+
+                <PopoverContent className="w-(--radix-popover-trigger-width) p-0">
+                    <Command shouldFilter={false}>
+                        <CommandInput placeholder={placeholder} className="h-9" onValueChange={setSearchValue} />
+
+                        <CommandList>
+                            {/* ====== CLEAR BUTTON ====== */}
+                            {searchValue === '' && dataSelected && (
+                                <CommandGroup>
+                                    <CommandItem
+                                        value="__clear__"
+                                        onSelect={() => {
+                                            handleOnChange(null);
+                                            setSearchValue('');
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        Clear selection
+                                    </CommandItem>
+                                </CommandGroup>
+                            )}
+
+                            {/* Search kosong */}
+                            {searchValue === '' && !dataSelected && <CommandEmpty>Type 3 or more characters.</CommandEmpty>}
+
+                            {/* List jika search diisi */}
+                            {searchValue !== '' && (
+                                <CommandGroup>
+                                    {filteredData?.length === 0 && <CommandEmpty>No results found.</CommandEmpty>}
+
+                                    {filteredData?.map((item) => (
+                                        <CommandItem
+                                            key={item.value}
+                                            value={item.label}
+                                            onSelect={() => {
+                                                handleOnChange(item.value);
+                                                setSearchValue('');
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            {item.label}
+                                            {dataSelected == item.value && <Check className="ml-auto opacity-100" />}
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            )}
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            </Popover>
         </div>
     );
 };

@@ -1,16 +1,18 @@
 import { ButtonComponent } from '@/components/partials/button-component';
 import InputTextComponent from '@/components/partials/input-components';
+import { SelectSearchComponent } from '@/components/partials/select-component';
 import { useForm, usePage } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
 import { FormEvent } from 'react';
 import { toast } from 'sonner';
 
-export const PermissionForm = ({ dataId }: { dataId?: number }) => {
-    const { permission } = usePage<any>().props;
+export const VillageForm = ({ dataId }: { dataId?: number }) => {
+    const { village, districts } = usePage<any>().props;
 
     const { data, setData, post, put, processing, errors, reset, transform } = useForm({
         saveBack: 'false',
-        name: permission?.name || '',
+        name: village?.name || '',
+        district_id: village?.district?.id || '',
     });
 
     // transformData
@@ -22,23 +24,23 @@ export const PermissionForm = ({ dataId }: { dataId?: number }) => {
         e.preventDefault();
 
         if (dataId) {
-            put(route('admin.core.permissions.update', dataId), {
+            put(route('admin.core.regions.villages.update', dataId), {
                 onSuccess: () => {
-                    toast.success('Permission berhasil diubah');
+                    toast.success('village berhasil diubah');
                     reset(); // reset form
                 },
                 onError: () => {
-                    toast.error('Terjadi kesalahan saat mengubah permission');
+                    toast.error('Terjadi kesalahan saat mengubah village');
                 },
             });
         } else {
-            post(route('admin.core.permissions.store'), {
+            post(route('admin.core.regions.villages.store'), {
                 onSuccess: () => {
-                    toast.success('Permission berhasil ditambahkan');
+                    toast.success('village berhasil ditambahkan');
                     reset(); // reset form
                 },
                 onError: () => {
-                    toast.error('Terjadi kesalahan saat menambahkan permission');
+                    toast.error('Terjadi kesalahan saat menambahkan village');
                 },
             });
         }
@@ -55,6 +57,15 @@ export const PermissionForm = ({ dataId }: { dataId?: number }) => {
                     handleOnChange={(value: string) => setData('name', value)}
                     errors={errors.name && errors.name}
                     helperText={errors.name && errors.name}
+                />
+                <SelectSearchComponent
+                    label="District"
+                    placeholder="Select District..."
+                    data={districts?.map((item: any) => {
+                        return { label: item.name, value: item.id };
+                    })}
+                    dataSelected={data?.district_id}
+                    handleOnChange={(value) => setData('district_id', value)}
                 />
             </div>
             <div className="flex justify-end space-x-4">

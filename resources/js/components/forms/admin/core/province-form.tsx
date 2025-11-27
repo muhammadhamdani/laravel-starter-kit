@@ -5,12 +5,12 @@ import { SaveIcon } from 'lucide-react';
 import { FormEvent } from 'react';
 import { toast } from 'sonner';
 
-export const PermissionForm = ({ dataId }: { dataId?: number }) => {
-    const { permission } = usePage<any>().props;
+export const ProvinceForm = ({ dataId }: { dataId?: number }) => {
+    const { province } = usePage<any>().props;
 
     const { data, setData, post, put, processing, errors, reset, transform } = useForm({
         saveBack: 'false',
-        name: permission?.name || '',
+        name: province?.name || '',
     });
 
     // transformData
@@ -22,23 +22,23 @@ export const PermissionForm = ({ dataId }: { dataId?: number }) => {
         e.preventDefault();
 
         if (dataId) {
-            put(route('admin.core.permissions.update', dataId), {
+            put(route('admin.core.regions.provinces.update', dataId), {
                 onSuccess: () => {
-                    toast.success('Permission berhasil diubah');
+                    toast.success('Province berhasil diubah');
                     reset(); // reset form
                 },
                 onError: () => {
-                    toast.error('Terjadi kesalahan saat mengubah permission');
+                    toast.error('Terjadi kesalahan saat mengubah Province');
                 },
             });
         } else {
-            post(route('admin.core.permissions.store'), {
+            post(route('admin.core.regions.provinces.store'), {
                 onSuccess: () => {
-                    toast.success('Permission berhasil ditambahkan');
+                    toast.success('Province berhasil ditambahkan');
                     reset(); // reset form
                 },
                 onError: () => {
-                    toast.error('Terjadi kesalahan saat menambahkan permission');
+                    toast.error('Terjadi kesalahan saat menambahkan Province');
                 },
             });
         }

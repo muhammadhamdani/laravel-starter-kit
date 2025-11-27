@@ -23,14 +23,14 @@ Breadcrumbs::for(
 
 Breadcrumbs::for(
     'admin.core.users.show',
-    fn($trail, $user) =>
-    $trail->parent('admin.core.users.index')->push($user->name, route('admin.core.users.show', $user))
+    fn($trail, $item) =>
+    $trail->parent('admin.core.users.index')->push($item->name, route('admin.core.users.show', $item))
 );
 
 Breadcrumbs::for(
     'admin.core.users.edit',
-    fn($trail, $user) =>
-    $trail->parent('admin.core.users.show', $user)->push('Edit', route('admin.core.users.edit', $user))
+    fn($trail, $item) =>
+    $trail->parent('admin.core.users.show', $item)->push('Edit', route('admin.core.users.edit', $item))
 );
 
 Breadcrumbs::for(
@@ -54,14 +54,14 @@ Breadcrumbs::for(
 
 Breadcrumbs::for(
     'admin.core.permissions.show',
-    fn($trail, $permission) =>
-    $trail->parent('admin.core.permissions.index')->push($permission->name, route('admin.core.permissions.show', $permission))
+    fn($trail, $item) =>
+    $trail->parent('admin.core.permissions.index')->push($item->name, route('admin.core.permissions.show', $item))
 );
 
 Breadcrumbs::for(
     'admin.core.permissions.edit',
-    fn($trail, $permission) =>
-    $trail->parent('admin.core.permissions.show', $permission)->push('Edit', route('admin.core.permissions.edit', $permission))
+    fn($trail, $item) =>
+    $trail->parent('admin.core.permissions.show', $item)->push('Edit', route('admin.core.permissions.edit', $item))
 );
 
 Breadcrumbs::for(
@@ -85,14 +85,14 @@ Breadcrumbs::for(
 
 Breadcrumbs::for(
     'admin.core.roles.show',
-    fn($trail, $permission) =>
-    $trail->parent('admin.core.roles.index')->push($permission->name, route('admin.core.roles.show', $permission))
+    fn($trail, $item) =>
+    $trail->parent('admin.core.roles.index')->push($item->name, route('admin.core.roles.show', $item))
 );
 
 Breadcrumbs::for(
     'admin.core.roles.edit',
-    fn($trail, $permission) =>
-    $trail->parent('admin.core.roles.show', $permission)->push('Edit', route('admin.core.roles.edit', $permission))
+    fn($trail, $item) =>
+    $trail->parent('admin.core.roles.show', $item)->push('Edit', route('admin.core.roles.edit', $item))
 );
 
 Breadcrumbs::for(
@@ -101,8 +101,126 @@ Breadcrumbs::for(
     $trail->parent('admin.core.roles.index')->push('Roles Data', route('admin.core.roles.data'))
 );
 
+// Provinces
 Breadcrumbs::for(
-    'admin.core.roles.access',
+    'admin.core.regions.provinces.index',
     fn($trail) =>
-    $trail->parent('admin.core.roles.index')->push('Roles Access', route('admin.core.roles.access'))
+    $trail->parent('admin.dashboard')->push('Provinces', route('admin.core.regions.provinces.index'))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.provinces.create',
+    fn($trail) =>
+    $trail->parent('admin.core.regions.provinces.index')->push('Create', route('admin.core.regions.provinces.create'))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.provinces.show',
+    fn($trail, $item) =>
+    $trail->parent('admin.core.regions.provinces.index')->push($item->name, route('admin.core.regions.provinces.show', $item))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.provinces.edit',
+    fn($trail, $item) =>
+    $trail->parent('admin.core.regions.provinces.show', $item)->push('Edit', route('admin.core.regions.provinces.edit', $item))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.provinces.data',
+    fn($trail) =>
+    $trail->parent('admin.core.regions.provinces.index')->push('Province Data', route('admin.core.regions.provinces.data'))
+);
+
+// Regencies
+Breadcrumbs::for(
+    'admin.core.regions.regencies.index',
+    fn($trail) =>
+    $trail->parent('admin.dashboard')->push('Regencies', route('admin.core.regions.regencies.index'))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.regencies.create',
+    fn($trail) =>
+    $trail->parent('admin.core.regions.regencies.index')->push('Create', route('admin.core.regions.regencies.create'))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.regencies.show',
+    fn($trail, $item) =>
+    $trail->parent('admin.core.regions.regencies.index')->push($item->name, route('admin.core.regions.regencies.show', $item))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.regencies.edit',
+    fn($trail, $item) =>
+    $trail->parent('admin.core.regions.regencies.show', $item)->push('Edit', route('admin.core.regions.regencies.edit', $item))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.regencies.data',
+    fn($trail) =>
+    $trail->parent('admin.core.regions.regencies.index')->push('Regencies Data', route('admin.core.regions.regencies.data'))
+);
+
+// Districts
+Breadcrumbs::for(
+    'admin.core.regions.districts.index',
+    fn($trail) =>
+    $trail->parent('admin.dashboard')->push('Districts', route('admin.core.regions.districts.index'))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.districts.create',
+    fn($trail) =>
+    $trail->parent('admin.core.regions.districts.index')->push('Create', route('admin.core.regions.districts.create'))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.districts.show',
+    fn($trail, $item) =>
+    $trail->parent('admin.core.regions.districts.index')->push($item->name, route('admin.core.regions.districts.show', $item))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.districts.edit',
+    fn($trail, $item) =>
+    $trail->parent('admin.core.regions.districts.show', $item)->push('Edit', route('admin.core.regions.districts.edit', $item))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.districts.data',
+    fn($trail) =>
+    $trail->parent('admin.core.regions.districts.index')->push('District Data', route('admin.core.regions.districts.data'))
+);
+
+// Villages
+Breadcrumbs::for(
+    'admin.core.regions.villages.index',
+    fn($trail) =>
+    $trail->parent('admin.dashboard')->push('Villages', route('admin.core.regions.villages.index'))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.villages.create',
+    fn($trail) =>
+    $trail->parent('admin.core.regions.villages.index')->push('Create', route('admin.core.regions.villages.create'))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.villages.show',
+    fn($trail, $item) =>
+    $trail->parent('admin.core.regions.villages.index')->push($item->name, route('admin.core.regions.villages.show', $item))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.villages.edit',
+    fn($trail, $item) =>
+    $trail->parent('admin.core.regions.villages.show', $item)->push('Edit', route('admin.core.regions.villages.edit', $item))
+);
+
+Breadcrumbs::for(
+    'admin.core.regions.villages.data',
+    fn($trail) =>
+    $trail->parent('admin.core.regions.villages.index')->push('Village Data', route('admin.core.regions.villages.data'))
 );

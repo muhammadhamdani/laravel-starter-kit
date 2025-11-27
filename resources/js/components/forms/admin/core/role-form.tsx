@@ -61,7 +61,7 @@ export const RoleForm = ({ dataId }: { dataId?: number }) => {
         e.preventDefault();
 
         if (dataId) {
-            put(route('roles.update', dataId), {
+            put(route('admin.core.roles.update', dataId), {
                 onSuccess: () => {
                     toast.success('Role berhasil diubah');
                     reset(); // reset form
@@ -71,7 +71,7 @@ export const RoleForm = ({ dataId }: { dataId?: number }) => {
                 },
             });
         } else {
-            post(route('roles.store'), {
+            post(route('admin.core.roles.store'), {
                 onSuccess: () => {
                     toast.success('Role berhasil ditambahkan');
                     reset(); // reset form

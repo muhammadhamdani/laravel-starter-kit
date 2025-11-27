@@ -60,17 +60,13 @@ class PermissionController extends Controller
                 'new_data' => $permission->toArray(),
             ]);
         } else {
-            $this->logError('create-permission', "Failed to create permission: {$permission->name}", [
+            $this->logError('create-permission', "Failed To Create Permission: {$permission->name}", [
                 'permission_id' => $permission->id,
                 'new_data' => $permission->toArray(),
             ]);
         }
 
-        if ($request->saveBack) {
-            return redirect()->route('admin.core.permissions.index')->with('success', 'Permission created successfully');
-        }
-
-        return redirect()->back()->with('success', 'Permission created successfully');
+        return redirect()->route('admin.core.permissions.index')->with('success', 'Permission Created Successfully');
     }
 
     /**
@@ -124,18 +120,14 @@ class PermissionController extends Controller
                 'new_data' => $permission->toArray(),
             ]);
         } else {
-            $this->logError('update-permission', "Failed to update permission: {$permission->name}", [
+            $this->logError('update-permission', "Failed To Update Permission: {$permission->name}", [
                 'permission_id' => $permission->id,
                 'old_data' => $oldData->toArray(),
                 'new_data' => $permission->toArray(),
             ]);
         }
 
-        if ($request->saveBack) {
-            return redirect()->route('admin.core.permissions.index')->with('success', 'Permission updated successfully');
-        }
-
-        return redirect()->back()->with('success', 'Permission updated successfully');
+        return redirect()->route('admin.core.permissions.index')->with('success', 'Permission Updated Successfully');
     }
 
     /**
@@ -147,7 +139,13 @@ class PermissionController extends Controller
 
         $permission->delete();
 
-        return redirect()->route('admin.core.permissions.index')->with('success', 'Permission deleted successfully');
+        if ($permission) {
+            $this->logSuccess('delete-permission', "Delete Permission: {$permission->name}", ['permission_id' => $permission->id]);
+        } else {
+            $this->logError('delete-permission', "Failed To Delete Permission: {$permission->name}", ['permission_id' => $permission->id]);
+        }
+
+        return redirect()->route('admin.core.permissions.index')->with('success', 'Permission Deleted Successfully');
     }
 
     public function getData(Request $request)

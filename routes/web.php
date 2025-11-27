@@ -8,6 +8,11 @@ use App\Http\Controllers\Admin\Core\RoleController;
 use App\Http\Controllers\Admin\Core\UserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Core\PermissionController;
+use App\Http\Controllers\Admin\Core\Region\RegionController;
+use App\Http\Controllers\Admin\Core\Region\VillageController;
+use App\Http\Controllers\Admin\Core\Region\DistrictController;
+use App\Http\Controllers\Admin\Core\Region\ProvinceController;
+use App\Http\Controllers\Admin\Core\Region\RegencyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +43,20 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->as('admin.')->group(fu
         Route::post('users/verify', [UserController::class, 'verify'])->name('users.verify');
         Route::get('users/data', [UserController::class, 'getData'])->name('users.data');
         Route::resource('users', UserController::class);
+
+        Route::prefix('regions')->as('regions.')->group(function () {
+            Route::get('provinces/data', [ProvinceController::class, 'getData'])->name('provinces.data');
+            Route::resource('provinces', ProvinceController::class);
+
+            Route::get('regencies/data', [RegencyController::class, 'getData'])->name('regencies.data');
+            Route::resource('regencies', RegencyController::class);
+
+            Route::get('districts/data', [DistrictController::class, 'getData'])->name('districts.data');
+            Route::resource('districts', DistrictController::class);
+
+            Route::get('villages/data', [VillageController::class, 'getData'])->name('villages.data');
+            Route::resource('villages', VillageController::class);
+        });
     });
 });
 

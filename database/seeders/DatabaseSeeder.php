@@ -41,6 +41,11 @@ class DatabaseSeeder extends Seeder
             ['name' => 'delete-user'],
             ['name' => 'data-user'],
             ['name' => 'verify-user'],
+            ['name' => 'view-region'],
+            ['name' => 'create-region'],
+            ['name' => 'update-region'],
+            ['name' => 'delete-region'],
+            ['name' => 'data-region'],
         ])->each(fn($permission) => Permission::create($permission)->assignRole('Administrators'));
 
         User::create([
@@ -49,5 +54,9 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => Hash::make(uniqid()),
         ])->assignRole('Administrators');
+
+        $this->call([
+            IndoRegionSeeder::class,
+        ]);
     }
 }
