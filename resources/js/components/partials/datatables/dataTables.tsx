@@ -47,8 +47,9 @@ export const DataTableComponent = ({ buttonActive }: { buttonActive?: any }) => 
                     </TableHeader>
                     <TableBody className="relative">
                         {isLoading && (
-                            <TableRow className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm">
-                                <TableCell>
+                            <TableRow className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm dark:bg-transparent">
+                                <TableCell className="flex flex-row items-center space-x-2">
+                                    <span>Loading</span>
                                     <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
                                 </TableCell>
                             </TableRow>

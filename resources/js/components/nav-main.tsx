@@ -1,7 +1,7 @@
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import classNames from 'classnames';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -131,7 +131,7 @@ export const MainNavigation = ({ items = [] }: { items: any[] }) => {
             return (
                 <SidebarMenuItem
                     key={menuKey}
-                    className={classNames({
+                    className={cn({
                         'pl-1': level === 1,
                         'pl-2': level === 2,
                         'pl-3': level >= 3,
@@ -156,14 +156,14 @@ export const MainNavigation = ({ items = [] }: { items: any[] }) => {
                         </SidebarMenuButton>
 
                         {hasChildren && (
-                            <button onClick={() => toggleMenu(menuKey)} className="ml-2 focus:outline-none">
+                            <button onClick={() => toggleMenu(menuKey)} className="focus:outline-none">
                                 {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                             </button>
                         )}
                     </div>
 
                     {hasChildren && isOpen && (
-                        <SidebarMenu className="mt-1 ml-2">{renderMenuItems(item.children, level + 1, [...parents, item.title])}</SidebarMenu>
+                        <SidebarMenu className="mt-1">{renderMenuItems(item.children, level + 1, [...parents, item.title])}</SidebarMenu>
                     )}
                 </SidebarMenuItem>
             );
