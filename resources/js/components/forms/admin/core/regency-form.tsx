@@ -1,5 +1,5 @@
 import { ButtonComponent } from '@/components/partials/button-component';
-import InputTextComponent from '@/components/partials/input-components';
+import { InputTextComponent } from '@/components/partials/input-components';
 import { SelectSearchComponent } from '@/components/partials/select-component';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';

@@ -1,5 +1,5 @@
 import { ButtonComponent } from '@/components/partials/button-component';
-import InputTextComponent from '@/components/partials/input-components';
+import { InputTextComponent } from '@/components/partials/input-components';
 import { SelectComponent } from '@/components/partials/select-component';
 import { useForm, usePage } from '@inertiajs/react';
 import { EyeClosedIcon, EyeIcon, SaveIcon } from 'lucide-react';

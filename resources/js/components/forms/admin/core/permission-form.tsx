@@ -1,5 +1,5 @@
 import { ButtonComponent } from '@/components/partials/button-component';
-import InputTextComponent from '@/components/partials/input-components';
+import {InputTextComponent} from '@/components/partials/input-components';
 import { useForm, usePage } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
 import { FormEvent } from 'react';

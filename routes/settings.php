@@ -1,11 +1,17 @@
 <?php
 
+use App\Http\Controllers\Admin\Settings\SiteSettingsController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth')->prefix('admin')->as('admin.')->group(function () {
+    Route::prefix('settings')->as('settings.')->group(function () {
+        Route::get('site', [SiteSettingsController::class, 'edit'])->name('site.edit');
+        Route::put('site', [SiteSettingsController::class, 'update'])->name('site.update');
+    });
+
     Route::redirect('settings', 'settings/profile');
 
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');

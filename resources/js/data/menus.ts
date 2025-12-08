@@ -1,4 +1,4 @@
-import { ChevronRight, CpuIcon, MapIcon } from 'lucide-react';
+import { ChevronRight, CogIcon, CpuIcon, MapIcon } from 'lucide-react';
 
 export const NavigationList = [
     {
@@ -58,6 +58,19 @@ export const NavigationList = [
                                 icon: ChevronRight,
                             },
                         ],
+                    },
+                ],
+            },
+            {
+                title: 'Settings',
+                roles: ['Administrators'],
+                icon: CogIcon,
+                children: [
+                    {
+                        title: 'Site',
+                        href: route('admin.settings.site.edit'),
+                        permission: 'view-settings-site',
+                        icon: ChevronRight,
                     },
                 ],
             },

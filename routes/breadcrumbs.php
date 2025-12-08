@@ -13,3 +13,4 @@ Breadcrumbs::for('log-viewer.index', function (BreadcrumbTrail $trail) {
 
 require __DIR__ . '/breadcrumbs/auth-breadcrumbs.php';
 require __DIR__ . '/breadcrumbs/admin-breadcrumbs.php';
+require __DIR__ . '/breadcrumbs/settings-breadcrumbs.php';

@@ -46,6 +46,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'update-region'],
             ['name' => 'delete-region'],
             ['name' => 'data-region'],
+            ['name' => 'view-settings-site'],
         ])->each(fn($permission) => Permission::create($permission)->assignRole('Administrators'));
 
         User::create([
