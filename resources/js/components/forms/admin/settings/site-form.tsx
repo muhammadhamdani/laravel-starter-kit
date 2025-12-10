@@ -28,8 +28,10 @@ export const SiteForm = () => {
     });
 
     // PREVIEW
-    const [logoPreview, setLogoPreview] = useState(`${ziggy.url}/storage/${settings?.logo}` || 'https://picsum.photos/300/300');
-    const [faviconPreview, setFaviconPreview] = useState(`${ziggy.url}/storage/${settings?.favicon}` || 'https://picsum.photos/300/300');
+    const [logoPreview, setLogoPreview] = useState((settings?.logo && `${ziggy.url}/storage/${settings?.logo}`) || 'https://picsum.photos/300/300');
+    const [faviconPreview, setFaviconPreview] = useState(
+        (settings?.favicon && `${ziggy.url}/storage/${settings?.favicon}`) || 'https://picsum.photos/300/300',
+    );
 
     /** FILE HANDLER WITH PREVIEW **/
     const handleLogoChange = (file: any) => {
@@ -75,7 +77,7 @@ export const SiteForm = () => {
                 </div>
                 <Card className="w-full">
                     <CardContent>
-                        <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-1">
+                        <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2">
                             <InputTextComponent
                                 type="text"
                                 label="Name"
@@ -163,14 +165,6 @@ export const SiteForm = () => {
                                 value={data.youtube}
                                 handleOnChange={(value: string) => setData('youtube', value)}
                                 errors={errors.youtube}
-                            />
-                            <InputTextComponent
-                                type="text"
-                                label="Linkedin"
-                                name="linkedin"
-                                value={data.linkedin}
-                                handleOnChange={(value: string) => setData('linkedin', value)}
-                                errors={errors.linkedin}
                             />
                             <InputTextComponent
                                 type="text"
