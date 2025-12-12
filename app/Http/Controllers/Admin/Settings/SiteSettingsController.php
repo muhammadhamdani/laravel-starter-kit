@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin\Settings;
 
 use Inertia\Inertia;
-use Illuminate\Http\Request;
-use App\Settings\SiteSetting;
-use App\Http\Controllers\Controller;
 use App\Traits\LogActivity;
 use App\Traits\UploadFiles;
+use Illuminate\Http\Request;
+use App\Settings\SiteSetting;
+use Illuminate\Http\UploadedFile;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class SiteSettingsController extends Controller
@@ -39,21 +40,27 @@ class SiteSettingsController extends Controller
             'tiktok' => ['nullable', 'string', 'max:255'],
         ])->validated();
 
-        // Assign otomatis semua field
         foreach ($validated as $key => $value) {
-            if (in_array($key, ['logo', 'favicon']) && $value instanceof \Illuminate\Http\UploadedFile) {
 
-                // Upload file
-                $path = $this->uploadFile($settings->$key, $value, "settings/$key");
+            // khusus file logo/fav
+            if (in_array($key, ['logo', 'favicon'])) {
 
-                $settings->$key = $path;
-            } else {
-                // Field biasa
-                $settings->$key = $value;
+                // jika user upload file baru
+                if ($value instanceof UploadedFile) {
+                    $settings->$key = $this->uploadFile(
+                        $settings->$key,
+                        $value,
+                        "settings/$key"
+                    );
+                }
+                // jika null → skip, tidak hapus value lama
+                continue;
             }
+
+            // field biasa
+            $settings->$key = $value;
         }
 
-        // Simpan (wajib)
         $settings->save();
 
         // Log Activity

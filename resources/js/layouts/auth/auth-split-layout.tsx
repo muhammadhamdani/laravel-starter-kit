@@ -1,6 +1,5 @@
 import AppLogoIcon from '@/components/app-logo-icon';
 import { Particles } from '@/components/ui/shadcn-io/particles';
-import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { useEffect, type PropsWithChildren } from 'react';
 import { toast, Toaster } from 'sonner';
@@ -11,7 +10,7 @@ interface AuthLayoutProps {
 }
 
 export default function AuthSplitLayout({ children, title, description }: PropsWithChildren<AuthLayoutProps>) {
-    const { name, quote, flash } = usePage<SharedData>().props;
+    const { name, quote, flash, settings } = usePage<any>().props;
 
     useEffect(() => {
         if (flash?.success) {
@@ -29,9 +28,9 @@ export default function AuthSplitLayout({ children, title, description }: PropsW
                 <div className="absolute inset-0 bg-slate-900">
                     <Particles className="absolute inset-0" quantity={1000} ease={100} staticity={50} color="#ffffff" size={0.8} />
                 </div>
-                <Link href={route('admin.dashboard')} className="relative z-20 flex items-center text-lg font-medium">
+                <Link href={route('admin.dashboard')} className="relative z-20 flex items-center space-x-4 text-lg font-medium">
                     <AppLogoIcon className="mr-2 size-8 fill-current text-white" />
-                    {name}
+                    <span>{settings?.site_name || name}</span>
                 </Link>
                 {quote && (
                     <div className="relative z-20 mt-auto">

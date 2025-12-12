@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 use Illuminate\Http\Request;
+use App\Settings\SiteSetting;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Auth;
 use Diglactic\Breadcrumbs\Breadcrumbs;
@@ -41,6 +42,8 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
+        $settings = app(SiteSetting::class);
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -50,6 +53,24 @@ class HandleInertiaRequests extends Middleware
                 'roles' =>  $request->user()?->roles->pluck('name')->toArray() ?? [],
                 'raw_permissions' => $request->user()?->roles->flatMap->resolvedPermissions->pluck('name'),
                 'permissions' => $request->user()?->resolvedPermissions() ?? [],
+            ],
+            'settings' => [
+                'site_name' => $settings->site_name,
+                'site_description' => $settings->site_description,
+                'logo' => $settings->logo ? asset('storage/' . $settings->logo) : null,
+                'favicon' => $settings->favicon ? asset('storage/' . $settings->favicon) : null,
+                'email' => $settings->email,
+                'phone' => $settings->phone,
+                'address' => $settings->address,
+                'social' => [
+                    'facebook' => $settings->facebook,
+                    'twitter' => $settings->twitter,
+                    'instagram' => $settings->instagram,
+                    'youtube' => $settings->youtube,
+                    'tiktok' => $settings->tiktok,
+                    'whatsapp' => $settings->whatsapp,
+                ],
+                'maintenance_mode' => $settings->maintenance_mode,
             ],
             'flash' => [
                 'success' => $request->session()->get('success'),

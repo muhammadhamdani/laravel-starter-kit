@@ -1,7 +1,34 @@
-import { SVGAttributes } from 'react';
+import { usePage } from '@inertiajs/react';
+import { SVGAttributes, useEffect } from 'react';
 
 export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
-    return (
+    const { settings, ziggy } = usePage<any>().props;
+
+    // Jalankan setiap ziggy.url berubah
+    useEffect(() => {
+        console.log('Ziggy URL berubah:', ziggy.url);
+    }, [ziggy.url]);
+
+    const normalizeLogoUrl = () => {
+        if (!settings?.logo) return null;
+
+        const base = ziggy.url.replace(/\/$/, '');
+        const logo = settings.logo;
+
+        // Jika logo sudah berupa URL absolute → pakai apa adanya
+        if (/^https?:\/\//i.test(logo)) {
+            return logo;
+        }
+
+        // Jika relative path → normalisasi supaya tidak double storage
+        return `${base}/storage/${logo.replace(/^\/?storage\//, '')}`;
+    };
+
+    const logoPath = normalizeLogoUrl();
+
+    return settings?.logo ? (
+        <img src={logoPath} className="h-12 w-12" />
+    ) : (
         <svg {...props} viewBox="0 0 40 42" xmlns="http://www.w3.org/2000/svg">
             <path
                 fillRule="evenodd"
