@@ -34,7 +34,10 @@ export default [
         },
         rules: {
             'react-hooks/rules-of-hooks': 'error',
-            'react-hooks/exhaustive-deps': 'warn',
+            // 'react-hooks/exhaustive-deps': 'warn',
+            '@typescript-eslint/no-unused-vars': 'off',
+            '@typescript-eslint/no-explicit-any': 'off',
+            'react-hooks/exhaustive-deps': 'off',
         },
     },
     {

@@ -25,6 +25,12 @@ class Province extends Model
      */
     protected $table = 'provinces';
 
+    protected $primaryKey = 'id';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     protected $fillable = ['id', 'name'];
 
     /**

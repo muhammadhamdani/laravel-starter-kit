@@ -26,6 +26,12 @@ class Regency extends Model
      */
     protected $table = 'regencies';
 
+    protected $primaryKey = 'id';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     /**
      * The attributes that are mass assignable.
      *
