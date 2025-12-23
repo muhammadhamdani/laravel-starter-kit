@@ -1,11 +1,13 @@
 import { DataTableComponent, DataTableProvider } from '@/components/partials/datatables/dataTables';
 import AppLayout from '@/layouts/app-layout';
 import { renderRowHeader, renderRowStatus } from '@/utils/material-table';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import moment from 'moment';
 import { useState } from 'react';
 
 export default function ListPage() {
+    const { ziggy } = usePage<any>().props;
+
     const [filterValue, setFilterValue] = useState();
     const [refreshData, setRefreshData] = useState(false);
 
@@ -21,7 +23,7 @@ export default function ListPage() {
         {
             header: (info: any) => renderRowHeader(info, 'Status'),
             accessorKey: 'email_verified_at',
-            cell: (info: any) => renderRowStatus(info.getValue()),
+            cell: (info: any) => renderRowStatus(info, ziggy.location, setRefreshData),
         },
     ];
 
@@ -49,7 +51,7 @@ export default function ListPage() {
                         setRefreshData={setRefreshData}
                         formatData={formatDataExport}
                     >
-                        <DataTableComponent buttonActive={{ import: false, export: false, bulkaction: false }} />
+                        <DataTableComponent buttonActive={{ import: false, export: false, bulkaction: { restore: false } }} />
                     </DataTableProvider>
                 </div>
             </div>

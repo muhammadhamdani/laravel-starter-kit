@@ -75,4 +75,9 @@ class UserPolicy
     {
         return $user->hasPermissionTo('verify-user');
     }
+
+    public function bulk(User $user): bool
+    {
+        return $user->hasPermissionTo('bulk-user');
+    }
 }

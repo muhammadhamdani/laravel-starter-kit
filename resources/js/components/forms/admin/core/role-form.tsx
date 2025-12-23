@@ -21,7 +21,7 @@ export const RoleForm = ({ dataId }: { dataId?: number }) => {
 
     const groupedPermissions = Object.values(
         permissions.reduce((acc: any, permission: any) => {
-            const match = permission.name.match(/^(view|create|update|delete|data|restore|force-delete|verify)-(.*)$/);
+            const match = permission.name.match(/^(view|create|update|delete|data|restore|force-delete|bulk|verify)-(.*)$/);
             if (!match) return acc;
 
             const subject = match[2];

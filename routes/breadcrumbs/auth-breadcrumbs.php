@@ -23,6 +23,10 @@ Breadcrumbs::for('password.request', function (BreadcrumbTrail $trail) {
     $trail->push('Forgot Password', route('password.request'));
 });
 
+Breadcrumbs::for('verification.notice', function (BreadcrumbTrail $trail) {
+    $trail->push('Verify Email', route('verification.notice'));
+});
+
 Breadcrumbs::for('admin.profile.edit', function (BreadcrumbTrail $trail) {
     $trail->push('Profile Settings', route('admin.profile.edit'));
 });

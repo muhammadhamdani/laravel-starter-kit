@@ -167,30 +167,54 @@ class UserController extends Controller
         return redirect()->route('admin.core.users.index')->with('success', 'User Deleted Successfully');
     }
 
-    public function verify(Request $request)
+    public function verify(Request $request, User $user)
     {
-        $this->authorize('verify-user', User::class);
+        $this->authorize('verify', $user);
 
-        $ids = $request->input('ids'); // bisa langsung array
-
-        if (!is_array($ids)) {
-            $ids = explode(',', $ids);
+        if ($user->email_verified_at) {
+            return redirect()->back()
+                ->with('info', 'User is already verified');
         }
 
-        $ids = collect($ids)->flatten()->toArray();
+        $data = [
+            'email_verified_at' => now(),
+        ];
 
-        $query = User::query()
-            ->whereIn('id', $ids)->update([
-                'email_verified_at' => now()
-            ]);
+        $query = $user->forceFill($data)->save();
 
         if ($query) {
-            $this->logSuccess('verify-user', "Verify User", []);
+            $this->logSuccess('verify-user', "Verify User", $data);
         } else {
-            $this->logError('verify-user', "Failed to verify user", []);
+            $this->logError('verify-user', "Failed to verify user", $data);
         }
 
-        return redirect()->back()->with('success', 'User verified successfully');
+        return redirect()->back()->with('success', 'User Verified Successfully');
+    }
+
+    public function bulkaction(Request $request)
+    {
+        $this->authorize('bulk', User::class);
+
+        $ids = $request->input('ids', []);
+        $action = $request->input('action');
+
+        $query = User::whereIn('id', $ids);
+
+        match ($action) {
+            'delete'  => $query->delete(),
+            'verify'  => $query->update(['email_verified_at' => now()]),
+            default   => null,
+        };
+
+        $actionText = match ($action) {
+            'delete'  => 'Deleted',
+            'verify'  => 'Verification',
+            default   => 'Processing',
+        };
+
+        return redirect()
+            ->route('admin.core.users.index')
+            ->with('success', "Multiple {$actionText} Data Successfully.");
     }
 
     public function getData(Request $request)

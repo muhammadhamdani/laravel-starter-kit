@@ -1,5 +1,5 @@
 import { Checkbox } from '@/components/ui/checkbox';
-import { renderRowAction, renderRowDate, renderRowHeader } from '@/utils/material-table';
+import { RenderRowAction, renderRowDate, renderRowHeader } from '@/utils/material-table';
 import { usePage } from '@inertiajs/react';
 import {
     flexRender,
@@ -216,7 +216,7 @@ export const DataTableProvider = ({
                 ? {
                       id: 'actions',
                       header: () => <span>Action</span>,
-                      cell: (info: any) => renderRowAction(info, fetchData),
+                      cell: (info: any) => RenderRowAction(info, fetchData),
                       enableSorting: false,
                       enableHiding: false,
                   }

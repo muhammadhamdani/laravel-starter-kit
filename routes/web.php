@@ -40,7 +40,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->as('admin.')->group(fu
         Route::resource('roles', RoleController::class);
 
         Route::post('users/bulk-action', [UserController::class, 'bulkAction'])->name('users.bulkaction');
-        Route::post('users/verify', [UserController::class, 'verify'])->name('users.verify');
+        Route::post('users/{user}/verify', [UserController::class, 'verify'])->name('users.verify');
         Route::get('users/data', [UserController::class, 'getData'])->name('users.data');
         Route::resource('users', UserController::class);
 

@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { router, usePage } from '@inertiajs/react';
-import axios from 'axios';
 import saveAs from 'file-saver';
 import { CopyIcon, DownloadIcon, Pickaxe, PlusIcon, RefreshCwIcon, UploadIcon } from 'lucide-react';
 import { createElement } from 'react';
@@ -98,17 +97,20 @@ export const DataTableButton = ({ buttonsActive = {} }: { buttonsActive?: { [key
 
                         const ids = selectedRows.map((item: any) => item.id);
 
-                        axios
-                            .post(`${ziggy.location}/bulkaction`, { ids: ids, action: 'delete' })
-                            .then(() => {
-                                toast.success('Deleted Contact Data Successfully.');
-                                fetchData();
-                                router.reload({ only: ['flash'] });
-                                table.resetRowSelection();
-                            })
-                            .catch((error) => {
-                                toast.error('Terjadi kesalahan saat menghapus data');
-                            });
+                        router.post(
+                            `${ziggy.location}/bulk-action`,
+                            { ids: ids, action: 'delete' },
+                            {
+                                onSuccess: () => {
+                                    fetchData();
+                                    router.reload({ only: ['flash'] });
+                                    table.resetRowSelection();
+                                },
+                                onError: () => {
+                                    toast.error('Terjadi kesalahan saat menghapus data');
+                                },
+                            },
+                        );
                     },
                 },
                 {
@@ -122,17 +124,20 @@ export const DataTableButton = ({ buttonsActive = {} }: { buttonsActive?: { [key
 
                         const ids = selectedRows.map((item: any) => item.id);
 
-                        axios
-                            .post(`${ziggy.location}/bulkaction`, { ids: ids, action: 'restore' })
-                            .then(() => {
-                                toast.success('Restored Contact Data Successfully.');
-                                fetchData();
-                                router.reload({ only: ['flash'] });
-                                table.resetRowSelection();
-                            })
-                            .catch((error) => {
-                                toast.error('Terjadi kesalahan saat restore data');
-                            });
+                        router.post(
+                            `${ziggy.location}/bulk-action`,
+                            { ids: ids, action: 'restore' },
+                            {
+                                onSuccess: () => {
+                                    fetchData();
+                                    router.reload({ only: ['flash'] });
+                                    table.resetRowSelection();
+                                },
+                                onError: () => {
+                                    toast.error('Terjadi kesalahan saat merestore data');
+                                },
+                            },
+                        );
                     },
                 },
                 {
@@ -146,17 +151,20 @@ export const DataTableButton = ({ buttonsActive = {} }: { buttonsActive?: { [key
 
                         const ids = selectedRows.map((item: any) => item.id);
 
-                        axios
-                            .post(`${ziggy.location}/bulkaction`, { ids: ids, action: 'verify' })
-                            .then(() => {
-                                toast.success('Proccesing Verified Contact Data Successfully.');
-                                fetchData();
-                                router.reload({ only: ['flash'] });
-                                table.resetRowSelection();
-                            })
-                            .catch((error) => {
-                                toast.error('Terjadi kesalahan saat memverifikasi data');
-                            });
+                        router.post(
+                            `${ziggy.location}/bulk-action`,
+                            { ids: ids, action: 'verify' },
+                            {
+                                onSuccess: () => {
+                                    fetchData();
+                                    router.reload({ only: ['flash'] });
+                                    table.resetRowSelection();
+                                },
+                                onError: () => {
+                                    toast.error('Terjadi kesalahan saat memverifikasi data');
+                                },
+                            },
+                        );
                     },
                 },
             ],

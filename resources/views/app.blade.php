@@ -32,9 +32,14 @@
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-        <link rel="icon" href="{{ $settings['favicon'] ?? '/favicon.ico' }}" sizes="any">
-        <link rel="icon" href="{{ $settings['favicon'] ?? '/favicon.svg'}}" type="image/svg+xml">
-      
+             <link rel="icon"
+      href="{{ $settings['favicon'] ?? asset('assets/images/svg/logo_color.svg') }}"
+      sizes="any">
+
+<link rel="icon"
+      href="{{ $settings['favicon'] ?? asset('assets/images/svg/logo_color.svg') }}"
+      type="image/svg+xml">
+
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
         <link rel="preconnect" href="https://fonts.bunny.net">

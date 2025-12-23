@@ -36,14 +36,31 @@ export const renderRowDateTime = (value: any) => {
     });
 };
 
-export const renderRowStatus = (value: any) => {
+export const renderRowStatus = (info: any, url?: string, setRefreshData?: (v: boolean) => void) => {
+    const value = info.getValue();
+    const id = info.row.original.id;
+
+    const handleVerify = () => {
+        router.post(
+            `${url}/${id}/verify`,
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setRefreshData?.(true);
+                    router.reload({ only: ['flash'] });
+                },
+            },
+        );
+    };
+
     return value ? (
         <Badge className="cursor-pointer bg-blue-500 text-white dark:bg-blue-600" variant="default" color="success">
             <BadgeCheckIcon />
             Verified
         </Badge>
     ) : (
-        <Badge className="cursor-pointer bg-red-500 text-white dark:bg-red-600" variant="destructive" color="danger">
+        <Badge onClick={() => handleVerify()} className="cursor-pointer bg-red-500 text-white dark:bg-red-600" variant="destructive" color="danger">
             <BadgeXIcon />
             Not Verified
         </Badge>
@@ -54,10 +71,12 @@ export const renderRowCellCheckbox = (info: any) => {
     return <Checkbox checked={info.row.getIsSelected()} onCheckedChange={(value) => info.row.toggleSelected(!!value)} aria-label="Select row" />;
 };
 
-export const renderRowAction = (info: any, fetchData: () => void) => {
+export const RenderRowAction = (info: any, fetchData: () => void) => {
     const [openModal, setOpenModal] = useState(false);
 
-    const { url } = usePage<SharedData>();
+    const {
+        ziggy: { location: url },
+    } = usePage<SharedData>().props;
 
     const data = info.row.original;
 
