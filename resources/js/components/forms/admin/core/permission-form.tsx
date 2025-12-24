@@ -1,5 +1,5 @@
 import { ButtonComponent } from '@/components/partials/button-component';
-import {InputTextComponent} from '@/components/partials/input-components';
+import { InputTextComponent } from '@/components/partials/input-components';
 import { useForm, usePage } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
 import { FormEvent } from 'react';
@@ -24,7 +24,6 @@ export const PermissionForm = ({ dataId }: { dataId?: number }) => {
         if (dataId) {
             put(route('admin.core.permissions.update', dataId), {
                 onSuccess: () => {
-                    toast.success('Permission berhasil diubah');
                     reset(); // reset form
                 },
                 onError: () => {
@@ -34,7 +33,6 @@ export const PermissionForm = ({ dataId }: { dataId?: number }) => {
         } else {
             post(route('admin.core.permissions.store'), {
                 onSuccess: () => {
-                    toast.success('Permission berhasil ditambahkan');
                     reset(); // reset form
                 },
                 onError: () => {

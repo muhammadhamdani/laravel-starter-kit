@@ -26,7 +26,6 @@ export const VillageForm = ({ dataId }: { dataId?: number }) => {
         if (dataId) {
             put(route('admin.core.regions.villages.update', dataId), {
                 onSuccess: () => {
-                    toast.success('village berhasil diubah');
                     reset(); // reset form
                 },
                 onError: () => {
@@ -36,7 +35,6 @@ export const VillageForm = ({ dataId }: { dataId?: number }) => {
         } else {
             post(route('admin.core.regions.villages.store'), {
                 onSuccess: () => {
-                    toast.success('village berhasil ditambahkan');
                     reset(); // reset form
                 },
                 onError: () => {

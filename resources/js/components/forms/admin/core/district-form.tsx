@@ -1,5 +1,5 @@
 import { ButtonComponent } from '@/components/partials/button-component';
-import {InputTextComponent} from '@/components/partials/input-components';
+import { InputTextComponent } from '@/components/partials/input-components';
 import { SelectSearchComponent } from '@/components/partials/select-component';
 import { useForm, usePage } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
@@ -26,7 +26,6 @@ export const DistrictForm = ({ dataId }: { dataId?: number }) => {
         if (dataId) {
             put(route('admin.core.regions.districts.update', dataId), {
                 onSuccess: () => {
-                    toast.success('district berhasil diubah');
                     reset(); // reset form
                 },
                 onError: () => {
@@ -36,7 +35,6 @@ export const DistrictForm = ({ dataId }: { dataId?: number }) => {
         } else {
             post(route('admin.core.regions.districts.store'), {
                 onSuccess: () => {
-                    toast.success('district berhasil ditambahkan');
                     reset(); // reset form
                 },
                 onError: () => {

@@ -31,7 +31,6 @@ export const RegencyForm = ({ dataId }: { dataId?: number }) => {
         if (dataId) {
             put(route('admin.core.regions.regencies.update', dataId), {
                 onSuccess: () => {
-                    toast.success('regency berhasil diubah');
                     reset(); // reset form
                 },
                 onError: () => {
@@ -41,7 +40,6 @@ export const RegencyForm = ({ dataId }: { dataId?: number }) => {
         } else {
             post(route('admin.core.regions.regencies.store'), {
                 onSuccess: () => {
-                    toast.success('regency berhasil ditambahkan');
                     reset(); // reset form
                 },
                 onError: () => {

@@ -33,7 +33,6 @@ export const UserForm = ({ dataId }: { dataId?: number }) => {
         if (dataId) {
             put(route('admin.core.users.update', dataId), {
                 onSuccess: () => {
-                    toast.success('User berhasil diubah');
                     reset(); // reset form
                 },
                 onError: () => {
@@ -43,7 +42,6 @@ export const UserForm = ({ dataId }: { dataId?: number }) => {
         } else {
             post(route('admin.core.users.store'), {
                 onSuccess: () => {
-                    toast.success('User berhasil ditambahkan');
                     reset(); // reset form
                 },
                 onError: () => {
