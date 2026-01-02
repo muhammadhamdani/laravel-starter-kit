@@ -5,9 +5,7 @@ export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
     const { settings, ziggy } = usePage<any>().props;
 
     // Jalankan setiap ziggy.url berubah
-    useEffect(() => {
-        console.log('Ziggy URL berubah:', ziggy.url);
-    }, [ziggy.url]);
+    useEffect(() => {}, [ziggy.url]);
 
     const normalizeLogoUrl = () => {
         if (!settings?.logo) return null;

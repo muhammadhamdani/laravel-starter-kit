@@ -1,11 +1,10 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useState } from 'react';
 import { UseDataTable } from './dataTables';
 
 export const DataTablePageSize = () => {
-    const [pageSizeOptions, setPageSizeOptions] = useState([10, 25, 50, 100, 250, 500]);
+    const pageSizeOptions = [10, 25, 50, 100, 250, 500];
 
-    const { pagination, setPagination }: any = UseDataTable();
+    const { pagination, setPagination, table }: any = UseDataTable();
 
     const handlePageSizeChange = (value: any) => {
         localStorage.setItem('pageSize', value);
@@ -14,6 +13,8 @@ export const DataTablePageSize = () => {
             page: 1,
             perPage: parseInt(value),
         });
+
+        table.resetRowSelection();
     };
 
     return (

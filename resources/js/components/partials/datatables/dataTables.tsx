@@ -1,90 +1,17 @@
 import { Checkbox } from '@/components/ui/checkbox';
 import { RenderRowAction, renderRowDate, renderRowHeader } from '@/utils/material-table';
 import { usePage } from '@inertiajs/react';
-import {
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
-} from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, SortingState, useReactTable } from '@tanstack/react-table';
 import axios from 'axios';
 import { Loader2 } from 'lucide-react';
-import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table';
 import { DataTableButton } from './datatables-button';
 import { DataTableInfo } from './datatables-info';
 import { DataTablePageSize } from './datatables-pagesize';
 import { DataTablePagination } from './datatables-pagination';
 import { DataTableGlobalSearch } from './datatables-search';
-
-export const DataTableComponent = ({ buttonActive }: { buttonActive?: any }) => {
-    const { columns, table, isLoading }: any = UseDataTable();
-
-    return (
-        <div className="flex flex-col space-y-4 p-4 md:p-6">
-            <DataTableButton buttonsActive={buttonActive} />
-            <div className="flex flex-row items-center justify-between">
-                <DataTablePageSize />
-                <DataTableGlobalSearch />
-            </div>
-            <div className="rounded-md border">
-                <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup: any) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header: any) => {
-                                    return (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                                        </TableHead>
-                                    );
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody className="relative">
-                        {isLoading && (
-                            <TableRow className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm dark:bg-transparent">
-                                <TableCell className="flex flex-row items-center space-x-2">
-                                    <span>Loading</span>
-                                    <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
-                                </TableCell>
-                            </TableRow>
-                        )}
-                        {table.getRowModel().rows?.length && !isLoading ? (
-                            table.getRowModel().rows.map((row: any) => (
-                                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                                    {row.getVisibleCells().map((cell: any) => (
-                                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : table.getRowModel().rows?.length && isLoading ? (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    Loading...
-                                </TableCell>
-                            </TableRow>
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </div>
-            <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
-                <DataTableInfo />
-                <DataTablePagination />
-            </div>
-        </div>
-    );
-};
+import { DataTableProviderProps } from './types/dataTable';
 
 export const DataTableContext = createContext({});
 
@@ -260,7 +187,7 @@ export const DataTableProvider = ({
     const table = useReactTable({
         data,
         columns: initialColumns,
-        pageCount: Math.ceil(pagination.total / pagination.perPage),
+        pageCount: pagination.total ? Math.ceil(pagination.total / pagination.perPage) : 0,
         state: {
             pagination: {
                 pageIndex: pagination.page - 1,
@@ -273,23 +200,19 @@ export const DataTableProvider = ({
         manualFiltering: true,
         manualSorting: true,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        getSortedRowModel: getSortedRowModel(),
         onSortingChange: setSorting,
-        onPaginationChange: (updater: any) => {
-            const newState =
+        onPaginationChange: (updater) => {
+            const next =
                 typeof updater === 'function'
                     ? updater({
                           pageIndex: pagination.page - 1,
                           pageSize: pagination.perPage,
                       })
                     : updater;
-
             setPagination((prev) => ({
                 ...prev,
-                page: newState.pageIndex + 1,
-                perPage: newState.pageSize,
+                page: next.pageIndex + 1,
+                perPage: next.pageSize,
             }));
         },
     });
@@ -299,9 +222,9 @@ export const DataTableProvider = ({
         [table.getSelectedRowModel()], // dependency
     );
 
-    useEffect(() => {
-        setSelectedData?.(selectedRows);
-    }, [selectedRows]);
+    // useEffect(() => {
+    //     setSelectedData?.(selectedRows);
+    // }, [selectedRows]);
 
     const contextValue = {
         columns: initialColumns,
@@ -327,17 +250,68 @@ export const DataTableProvider = ({
     return <DataTableContext.Provider value={contextValue}>{children}</DataTableContext.Provider>;
 };
 
-interface DataTableProviderProps {
-    columns: any;
-    filterValue?: any;
-    setFilterValue?: any;
-    withAction?: boolean;
-    refreshData?: boolean;
-    setRefreshData?: any;
-    selectedData?: any;
-    setSelectedData?: any;
-    formatData?: any;
-    customButton?: any;
-    urlFetchData?: string;
-    children: ReactNode;
-}
+export const DataTableComponent = ({ buttonActive }: { buttonActive?: any }) => {
+    const { columns, table, isLoading }: any = UseDataTable();
+
+    return (
+        <div className="flex flex-col space-y-4 p-4 md:p-6">
+            <DataTableButton buttonsActive={buttonActive} />
+            <div className="flex flex-row items-center justify-between">
+                <DataTablePageSize />
+                <DataTableGlobalSearch />
+            </div>
+            <div className="rounded-md border">
+                <Table>
+                    <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup: any) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header: any) => {
+                                    return (
+                                        <TableHead key={header.id}>
+                                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                        </TableHead>
+                                    );
+                                })}
+                            </TableRow>
+                        ))}
+                    </TableHeader>
+                    <TableBody className="relative">
+                        {isLoading && (
+                            <TableRow className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm dark:bg-transparent">
+                                <TableCell className="flex flex-row items-center space-x-2">
+                                    <span>Loading</span>
+                                    <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+                                </TableCell>
+                            </TableRow>
+                        )}
+                        {table.getRowModel().rows?.length && !isLoading ? (
+                            table.getRowModel().rows.map((row: any) => (
+                                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                                    {row.getVisibleCells().map((cell: any) => (
+                                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : table.getRowModel().rows?.length && isLoading ? (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    Loading...
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    No results.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+            <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
+                <DataTableInfo />
+                <DataTablePagination />
+            </div>
+        </div>
+    );
+};
