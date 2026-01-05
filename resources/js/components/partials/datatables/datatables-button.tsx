@@ -10,7 +10,8 @@ import { toast } from 'sonner';
 import { UseDataTable } from './dataTables';
 
 export const DataTableButton = ({ buttonsActive = {} }: { buttonsActive?: { [key: string]: boolean } }) => {
-    const { table, fetchData, selectedRows, formatData, customButton, setModalImport }: any = UseDataTable();
+    const { table, fetchData, selectedRows, formatData, customButton, setModalImport, setPagination, pagination, setRefreshData }: any =
+        UseDataTable();
     const { ziggy } = usePage<any>().props;
 
     const buttons = [
@@ -102,7 +103,11 @@ export const DataTableButton = ({ buttonsActive = {} }: { buttonsActive?: { [key
                             { ids: ids, action: 'delete' },
                             {
                                 onSuccess: () => {
-                                    fetchData();
+                                    setPagination({
+                                        ...pagination,
+                                        page: 1,
+                                    });
+                                    setRefreshData(true);
                                     router.reload({ only: ['flash'] });
                                     table.resetRowSelection();
                                 },
@@ -129,7 +134,11 @@ export const DataTableButton = ({ buttonsActive = {} }: { buttonsActive?: { [key
                             { ids: ids, action: 'restore' },
                             {
                                 onSuccess: () => {
-                                    fetchData();
+                                    setPagination({
+                                        ...pagination,
+                                        page: 1,
+                                    });
+                                    setRefreshData(true);
                                     router.reload({ only: ['flash'] });
                                     table.resetRowSelection();
                                 },
@@ -156,8 +165,12 @@ export const DataTableButton = ({ buttonsActive = {} }: { buttonsActive?: { [key
                             { ids: ids, action: 'verify' },
                             {
                                 onSuccess: () => {
-                                    fetchData();
                                     router.reload({ only: ['flash'] });
+                                    setPagination({
+                                        ...pagination,
+                                        page: 1,
+                                    });
+                                    setRefreshData(true);
                                     table.resetRowSelection();
                                 },
                                 onError: () => {
@@ -178,6 +191,10 @@ export const DataTableButton = ({ buttonsActive = {} }: { buttonsActive?: { [key
             onClick: () => {
                 fetchData();
                 table.resetRowSelection();
+                setPagination({
+                    ...pagination,
+                    page: 1,
+                });
             },
             enabled: true,
         },
