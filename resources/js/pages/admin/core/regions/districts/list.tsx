@@ -15,12 +15,12 @@ export default function DistrictList() {
         },
         {
             header: (info: any) => renderRowHeader(info, 'Regency'),
-            accessorKey: 'regency.name',
+            accessorKey: 'regency_id',
+            accessorFn: (row: any) => row.regency.name,
         },
         {
             header: (info: any) => renderRowHeader(info, 'Villages'),
-            accessorKey: 'villages.length',
-            accessorFn: (row: any) => row.villages.length,
+            accessorKey: 'villages_count',
         },
     ];
 

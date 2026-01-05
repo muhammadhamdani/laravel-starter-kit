@@ -14,9 +14,9 @@ export default function VillageList() {
             accessorKey: 'name',
         },
         {
-            enableSorting: false,
             header: (info: any) => renderRowHeader(info, 'District'),
-            accessorKey: 'district.name',
+            accessorKey: 'district_id',
+            accessorFn: (row: any) => row.district?.name,
         },
     ];
 

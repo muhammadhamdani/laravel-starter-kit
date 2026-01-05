@@ -165,7 +165,8 @@ class RegencyController extends Controller
         $orderBy = $request->input('orderBy', 'id');
 
         $query = Regency::query()
-            ->with(['province', 'districts'])
+            ->with(['province'])
+            ->withCount('districts')
             ->latest()
             ->when($globalSearch, function ($query, $search) {
                 return $query->where('name', 'like', "%{$search}%");

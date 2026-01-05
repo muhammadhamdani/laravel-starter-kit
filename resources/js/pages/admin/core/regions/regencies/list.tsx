@@ -15,12 +15,12 @@ export default function RegenciesList() {
         },
         {
             header: (info: any) => renderRowHeader(info, 'Provinces'),
-            accessorKey: 'province.name',
+            accessorKey: 'province_id',
+            accessorFn: (row: any) => row.province.name,
         },
         {
             header: (info: any) => renderRowHeader(info, 'Districts'),
-            accessorKey: 'districts.length',
-            accessorFn: (row: any) => row.districts.length,
+            accessorKey: 'districts_count',
         },
     ];
 

@@ -165,7 +165,8 @@ class DistrictController extends Controller
         $orderBy = $request->input('orderBy', 'id');
 
         $query = District::query()
-            ->with(['regency', 'villages'])
+            ->with(['regency'])
+            ->withCount('villages')
             ->latest()
             ->when($globalSearch, function ($query, $search) {
                 return $query->where('name', 'like', "%{$search}%");

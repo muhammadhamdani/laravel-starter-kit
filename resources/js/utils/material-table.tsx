@@ -139,8 +139,11 @@ export const RenderRowAction = (info: any, fetchData: () => void) => {
 export const renderRowHeader = (info: any, title: string) => {
     const isSorted = info.column.getIsSorted(); // 'asc', 'desc' atau false
     const columnId = info.column.id;
+    const canSort = info.column.getCanSort();
 
     const renderSortIcon = () => {
+        if (!canSort) return null;
+
         if (isSorted === 'asc') return <ChevronUpIcon className="h-5 w-5" />;
         if (isSorted === 'desc') return <ChevronDownIcon className="h-5 w-5" />;
 

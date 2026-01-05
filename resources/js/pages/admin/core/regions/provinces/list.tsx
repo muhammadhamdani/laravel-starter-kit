@@ -15,8 +15,7 @@ export default function ProvinceList() {
         },
         {
             header: (info: any) => renderRowHeader(info, 'Regencies'),
-            accessorKey: 'regencies.length',
-            accessorFn: (row: any) => row.regencies.length,
+            accessorKey: 'regencies_count',
         },
     ];
 

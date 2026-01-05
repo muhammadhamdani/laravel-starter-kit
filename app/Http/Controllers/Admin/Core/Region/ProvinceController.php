@@ -159,7 +159,7 @@ class ProvinceController extends Controller
         $orderBy = $request->input('orderBy', 'id');
 
         $query = Province::query()
-            ->with(['regencies'])
+            ->withCount('regencies')
             ->latest()
             ->when($globalSearch, function ($query, $search) {
                 return $query->where('name', 'like', "%{$search}%");
