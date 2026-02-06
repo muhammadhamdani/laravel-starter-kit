@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Models\Core\User;
 use App\Models\Core\Social;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
