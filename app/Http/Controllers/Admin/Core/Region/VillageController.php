@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Core\Region;
 
-use Inertia\Inertia;
-use App\Traits\LogActivity;
-use App\Models\Core\Village;
-use Illuminate\Http\Request;
-use App\Models\Core\District;
+use App\Concerns\Trait\LogActivity;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\StoreVillageRequest;
 use App\Http\Requests\Core\UpdateVillageRequest;
+use App\Models\Core\Region\District;
+use App\Models\Core\Region\Village;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class VillageController extends Controller
 {
@@ -22,7 +22,11 @@ class VillageController extends Controller
     {
         $this->authorize('viewAny', Village::class);
 
-        $data = [];
+        $districts = District::query()->select(['id', 'name'])->get();
+
+        $data = [
+            'districts' => $districts
+        ];
 
         return Inertia::render('admin/core/regions/villages/list', $data);
     }
@@ -34,8 +38,10 @@ class VillageController extends Controller
     {
         $this->authorize('create', Village::class);
 
+        $districts = District::query()->select(['id', 'name'])->get();
+
         $data = [
-            'districts' => District::query()->get()
+            'districts' => $districts
         ];
 
         return Inertia::render('admin/core/regions/villages/create', $data);
@@ -96,9 +102,11 @@ class VillageController extends Controller
 
         $findData = Village::with(['district'])->find($village->id);
 
+        $districts = District::query()->select(['id', 'name'])->get();
+
         $data = [
             'village' => $findData,
-            'districts' => District::query()->get()
+            'districts' => $districts
         ];
 
         return Inertia::render('admin/core/regions/villages/edit', $data);
@@ -156,21 +164,24 @@ class VillageController extends Controller
 
     public function getData(Request $request)
     {
-        $this->authorize('data-region', new Village());
+        $this->authorize('data-village', new Village());
 
         $perPage = $request->input('perPage', null);
         $page = $request->input('page', null);
         $globalSearch = $request->input('globalSearch', '');
         $orderDirection = $request->input('orderDirection', 'desc');
         $orderBy = $request->input('orderBy', 'id');
+        $filterValue = $request->input('filterValue', []);
 
         $query = Village::query()
             ->with(['district.regency.province'])
             ->latest()
-            ->when($globalSearch, function ($query, $search) {
-                return $query->where('name', 'like', "%{$search}%");
-            })
-            ->orderBy('created_at', 'desc')
+            ->search($globalSearch)
+            ->when(
+                data_get($filterValue, 'district_id'),
+                fn($query, $value) =>
+                $query->where('district_id', $value)
+            )
             ->orderBy($orderBy, $orderDirection);
 
         if ($perPage) {

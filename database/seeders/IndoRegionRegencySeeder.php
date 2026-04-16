@@ -27,13 +27,6 @@ class IndoRegionRegencySeeder extends Seeder
         // Get Data
         $regencies = RawDataGetter::getRegencies();
 
-        $regencies = array_map(function ($item) {
-            return array_merge($item, [
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }, $regencies);
-
         // Insert Data to Database
         DB::table('regencies')->insert($regencies);
     }

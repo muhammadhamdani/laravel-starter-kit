@@ -2,13 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use Inertia\Middleware;
-use Tighten\Ziggy\Ziggy;
-use Illuminate\Http\Request;
 use App\Settings\SiteSetting;
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Auth;
 use Diglactic\Breadcrumbs\Breadcrumbs;
+use Illuminate\Http\Request;
+use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -40,19 +37,23 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
-
         $settings = app(SiteSetting::class);
 
         return [
             ...parent::share($request),
             'name' => config('app.name'),
-            'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                'user' => $request->user(),
-                'roles' =>  $request->user()?->roles->pluck('name')->toArray() ?? [],
-                'raw_permissions' => $request->user()?->roles->flatMap->resolvedPermissions->pluck('name'),
-                'permissions' => $request->user()?->resolvedPermissions() ?? [],
+                'user' => $request->user()
+                    ? [
+                        ...$request->user()->only(['id', 'name', 'email']),
+                        'roles' => $request->user()->roles->pluck('name')->values(),
+                        'permissions' => $request->user()->getAllPermissions()->pluck('name')->values(),
+                    ]
+                    : null,
+            ],
+            'flash' => [
+                'success' => $request->session()->get('success'),
+                'error'   => $request->session()->get('error'),
             ],
             'settings' => [
                 'site_name' => $settings->site_name,
@@ -72,16 +73,11 @@ class HandleInertiaRequests extends Middleware
                 ],
                 'maintenance_mode' => $settings->maintenance_mode,
             ],
-            'flash' => [
-                'success' => $request->session()->get('success'),
-                'error'   => $request->session()->get('error'),
-            ],
-            'ziggy' => fn(): array => [
-                ...(new Ziggy)->toArray(),
-                'location' => $request->url(),
-            ],
-            'breadcrumbs' => $request->isMethod('get')
-                ? Breadcrumbs::generate()
+            'breadcrumbs' => $request->isMethod('get') && $request->route()
+                ? Breadcrumbs::generate(
+                    $request->route()->getName(),
+                    ...array_values($request->route()->parameters())
+                )
                 : [],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

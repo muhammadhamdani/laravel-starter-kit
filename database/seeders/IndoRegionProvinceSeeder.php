@@ -27,13 +27,6 @@ class IndoRegionProvinceSeeder extends Seeder
         // Get Data
         $provinces = RawDataGetter::getProvinces();
 
-        $provinces = array_map(function ($item) {
-            return array_merge($item, [
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }, $provinces);
-
         // Insert Data to Database
         DB::table('provinces')->insert($provinces);
     }

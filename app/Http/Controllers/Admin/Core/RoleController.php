@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Core;
 
-use Inertia\Inertia;
-use App\Models\Core\Role;
-use App\Traits\LogActivity;
-use Illuminate\Http\Request;
-use App\Models\Core\Permission;
+use App\Concerns\Trait\LogActivity;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\StoreRoleRequest;
 use App\Http\Requests\Core\UpdateRoleRequest;
+use App\Models\Core\Permission;
+use App\Models\Core\Role;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class RoleController extends Controller
 {
@@ -34,7 +34,7 @@ class RoleController extends Controller
     {
         $this->authorize('create', Role::class);
 
-        $permissions = Permission::with(['roles'])->get();
+        $permissions = Permission::with(['roles'])->select(['id', 'name'])->get();
 
         $data = [
             'permissions' => $permissions
@@ -94,7 +94,7 @@ class RoleController extends Controller
     {
         $this->authorize('update', $role);
 
-        $permissions = Permission::with(['roles'])->get();
+        $permissions = Permission::with(['roles'])->select(['id', 'name'])->get();
 
         $findData = $role->load('permissions');
 
@@ -168,10 +168,7 @@ class RoleController extends Controller
         $query = Role::query()
             ->with(['permissions'])
             ->latest()
-            ->when($globalSearch, function ($query, $search) {
-                return $query->where('name', 'like', "%{$search}%");
-            })
-            ->orderBy('created_at', 'desc')
+            ->search($globalSearch)
             ->orderBy($orderBy, $orderDirection);
 
         if ($perPage) {

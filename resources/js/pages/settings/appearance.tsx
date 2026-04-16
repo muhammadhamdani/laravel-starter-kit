@@ -1,22 +1,33 @@
-import { Head } from '@inertiajs/react';
-
 import AppearanceTabs from '@/components/appearance-tabs';
-import HeadingSmall from '@/components/heading-small';
-
-import AppLayout from '@/layouts/app-layout';
-import SettingsLayout from '@/layouts/settings/layout';
+import Heading from '@/components/heading';
+import { edit as editAppearance } from '@/routes/admin/appearance';
+import { Head } from '@inertiajs/react';
+import { Fragment } from 'react';
 
 export default function Appearance() {
     return (
-        <AppLayout>
+        <Fragment>
             <Head title="Appearance settings" />
 
-            <SettingsLayout>
-                <div className="space-y-6">
-                    <HeadingSmall title="Appearance settings" description="Update your account's appearance settings" />
-                    <AppearanceTabs />
-                </div>
-            </SettingsLayout>
-        </AppLayout>
+            <h1 className="sr-only">Appearance settings</h1>
+
+            <div className="space-y-6">
+                <Heading
+                    variant="small"
+                    title="Appearance settings"
+                    description="Update your account's appearance settings"
+                />
+                <AppearanceTabs />
+            </div>
+        </Fragment>
     );
 }
+
+Appearance.layout = {
+    breadcrumbs: [
+        {
+            title: 'Appearance settings',
+            href: editAppearance(),
+        },
+    ],
+};

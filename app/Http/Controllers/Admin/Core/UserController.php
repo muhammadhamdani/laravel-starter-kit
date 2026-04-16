@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Core;
 
+use App\Concerns\Trait\LogActivity;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\StoreUserRequest;
 use App\Http\Requests\Core\UpdateUserRequest;
 use App\Models\Core\Role;
 use App\Models\Core\User;
-use App\Traits\LogActivity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -22,7 +23,11 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        $data = [];
+        $roles = Role::with(['permissions'])->select(['id', 'name'])->get();
+
+        $data = [
+            'roles' => $roles
+        ];
 
         return Inertia::render('admin/core/users/list', $data);
     }
@@ -34,7 +39,7 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
 
-        $roles = Role::with(['permissions'])->get();
+        $roles = Role::with(['permissions'])->select(['id', 'name'])->get();
 
         $data = [
             'roles' => $roles
@@ -53,7 +58,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => Hash::make($request->password),
             'role' => ['required'],
         ])->assignRole($request->role);
 
@@ -98,7 +103,7 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
 
-        $roles = Role::with(['permissions'])->get();
+        $roles = Role::with(['permissions'])->select(['id', 'name'])->get();
 
         $findData = User::with(['roles'])->find($user->id);
 
@@ -167,9 +172,9 @@ class UserController extends Controller
         return redirect()->route('admin.core.users.index')->with('success', 'User Deleted Successfully');
     }
 
-    public function verify(Request $request, User $user)
+    public function verify(User $user)
     {
-        $this->authorize('verify', $user);
+        $this->authorize('update', $user);
 
         if ($user->email_verified_at) {
             return redirect()->back()
@@ -196,6 +201,7 @@ class UserController extends Controller
         $this->authorize('bulk', User::class);
 
         $ids = $request->input('ids', []);
+
         $action = $request->input('action');
 
         $query = User::whereIn('id', $ids);
@@ -209,7 +215,7 @@ class UserController extends Controller
         $actionText = match ($action) {
             'delete'  => 'Deleted',
             'verify'  => 'Verification',
-            default   => 'Processing',
+            default   => 'No Action',
         };
 
         return redirect()
@@ -226,15 +232,19 @@ class UserController extends Controller
         $globalSearch = $request->input('globalSearch', '');
         $orderDirection = $request->input('orderDirection', 'desc');
         $orderBy = $request->input('orderBy', 'id');
+        $filterValue = $request->input('filterValue', []);
 
         $query = User::query()
             ->with(['roles'])
             ->latest()
-            ->when($globalSearch, function ($query, $search) {
-                return $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            })
-            ->orderBy('created_at', 'desc')
+            ->search($globalSearch)
+            ->when(
+                data_get($filterValue, 'roles'),
+                fn($query, $value) =>
+                $query->whereHas('roles', function ($roleQuery) use ($value) {
+                    $roleQuery->where('id', $value);
+                })
+            )
             ->orderBy($orderBy, $orderDirection)
             ->paginate($perPage, ['*'], 'page', $page);
 

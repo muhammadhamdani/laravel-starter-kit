@@ -24,6 +24,6 @@ class SiteSetting extends Settings
 
     public static function group(): string
     {
-        return 'site';
+        return 'Site';
     }
 }

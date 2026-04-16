@@ -1,9 +1,28 @@
-import { MainNavigation } from '@/components/nav-main';
+import AppLogo from '@/components/app-logo';
+import { MainNav } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+} from '@/components/ui/sidebar';
 import { NavigationList } from '@/data/menus';
+import { dashboard } from '@/routes/admin';
+import type { NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import AppLogo from './app-logo';
+import { LayoutGrid } from 'lucide-react';
+
+const mainNavItems: NavItem[] = [
+    {
+        title: 'Dashboard',
+        href: dashboard(),
+        icon: LayoutGrid,
+    },
+];
 
 export function AppSidebar() {
     return (
@@ -12,7 +31,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={route('admin.dashboard')} prefetch>
+                            <Link href={dashboard()} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
@@ -22,7 +41,7 @@ export function AppSidebar() {
 
             <SidebarContent>
                 {/* <NavMain items={mainNavItems} /> */}
-                <MainNavigation items={NavigationList} />
+                <MainNav items={NavigationList} />
             </SidebarContent>
 
             <SidebarFooter>

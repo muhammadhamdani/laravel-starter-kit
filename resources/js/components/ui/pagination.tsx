@@ -1,10 +1,10 @@
 import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  MoreHorizontalIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    MoreHorizontalIcon,
 } from "lucide-react"
 
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants, type Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ComponentProps } from "react"
 
@@ -117,6 +117,6 @@ function PaginationEllipsis({
 }
 
 export {
-  Pagination,
-  PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious
+    Pagination,
+    PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious
 }

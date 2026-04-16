@@ -1,5 +1,3 @@
-"use client"
-
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 
@@ -54,6 +52,9 @@ function SelectContent({
   className,
   children,
   position = "popper",
+  side = "bottom",
+  sideOffset = 4,
+  align = "center",
   ...props
 }: ComponentProps<typeof SelectPrimitive.Content>) {
   return (
@@ -67,6 +68,10 @@ function SelectContent({
           className
         )}
         position={position}
+        side={side}
+        sideOffset={sideOffset}
+        avoidCollisions={false}
+        align={align}
         {...props}
       >
         <SelectScrollUpButton />
@@ -112,7 +117,10 @@ function SelectItem({
       )}
       {...props}
     >
-      <span className="absolute right-2 flex size-3.5 items-center justify-center">
+      <span
+        data-slot="select-item-indicator"
+        className="absolute right-2 flex size-3.5 items-center justify-center"
+      >
         <SelectPrimitive.ItemIndicator>
           <CheckIcon className="size-4" />
         </SelectPrimitive.ItemIndicator>
@@ -172,14 +180,15 @@ function SelectScrollDownButton({
 }
 
 export {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectScrollDownButton,
-  SelectScrollUpButton,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectScrollDownButton,
+    SelectScrollUpButton,
+    SelectSeparator,
+    SelectTrigger,
+    SelectValue
 }
+

@@ -27,15 +27,8 @@ class IndoRegionVillageSeeder extends Seeder
         // Get Data
         $villages = RawDataGetter::getVillages();
 
-        $villages = array_map(function ($item) {
-            return array_merge($item, [
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }, $villages);
-
         // Insert Data with Chunk
-        DB::transaction(function () use ($villages) {
+        DB::transaction(function() use($villages) {
             $collection = collect($villages);
             $parts = $collection->chunk(1000);
             foreach ($parts as $subset) {

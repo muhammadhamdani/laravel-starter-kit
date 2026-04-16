@@ -1,33 +1,38 @@
-import classNames from 'classnames';
-import { LoaderCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { createElement } from 'react';
 import { Button } from '../ui/button';
+import { Spinner } from '../ui/spinner';
+
+interface ButtonProps {
+    buttonText?: string;
+    className?: string;
+    buttonType?: 'button' | 'submit' | 'reset';
+    isProcessing?: boolean;
+    addonLeft?: any;
+    addonRight?: any;
+    [key: string]: any;
+}
 
 export const ButtonComponent = ({
-    buttonText = 'Button',
     buttonType = 'button',
-    isProcessing,
-    className,
+    buttonText = 'Button',
+    className = '',
+    isProcessing = false,
     addonLeft,
     addonRight,
     ...props
 }: ButtonProps) => {
     return (
-        <Button type={buttonType} disabled={isProcessing} className={classNames('cursor-pointer disabled:cursor-not-allowed', className)} {...props}>
+        <Button
+            type={buttonType}
+            disabled={isProcessing}
+            className={cn(className)}
+            {...props}
+        >
             {addonLeft && createElement(addonLeft, { className: 'w-5 h-5' })}
             <span>{buttonText}</span>
             {addonRight && createElement(addonRight, { className: 'w-5 h-5' })}
-            {isProcessing && <LoaderCircle className="mr-2 h-5 w-5 animate-spin" />}
+            {isProcessing && <Spinner className="animate-spin" />}
         </Button>
     );
 };
-
-interface ButtonProps {
-    buttonText?: string;
-    buttonType?: 'button' | 'submit' | 'reset';
-    addonLeft?: any;
-    addonRight?: any;
-    isProcessing?: boolean;
-    className?: string;
-    [key: string]: any;
-}

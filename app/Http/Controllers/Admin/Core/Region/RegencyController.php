@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Core\Region;
 
-use Inertia\Inertia;
-use App\Traits\LogActivity;
-use App\Models\Core\Regency;
-use Illuminate\Http\Request;
+use App\Concerns\Trait\LogActivity;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\StoreRegencyRequest;
 use App\Http\Requests\Core\UpdateRegencyRequest;
-use App\Models\Core\Province;
+use App\Models\Core\Region\Province;
+use App\Models\Core\Region\Regency;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class RegencyController extends Controller
 {
@@ -22,7 +22,11 @@ class RegencyController extends Controller
     {
         $this->authorize('viewAny', Regency::class);
 
-        $data = [];
+        $provinces = Province::query()->select(['id', 'name'])->get();
+
+        $data = [
+            'provinces' => $provinces
+        ];
 
         return Inertia::render('admin/core/regions/regencies/list', $data);
     }
@@ -34,8 +38,10 @@ class RegencyController extends Controller
     {
         $this->authorize('create', Regency::class);
 
+        $provinces = Province::query()->select(['id', 'name'])->get();
+
         $data = [
-            'provinces' => Province::query()->get()
+            'provinces' => $provinces
         ];
 
         return Inertia::render('admin/core/regions/regencies/create', $data);
@@ -96,9 +102,11 @@ class RegencyController extends Controller
 
         $findData = Regency::with(['province'])->find($regency->id);
 
+        $provinces = Province::query()->select(['id', 'name'])->get();
+
         $data = [
             'regency' => $findData,
-            'provinces' => Province::query()->get()
+            'provinces' => $provinces
         ];
 
         return Inertia::render('admin/core/regions/regencies/edit', $data);
@@ -156,22 +164,25 @@ class RegencyController extends Controller
 
     public function getData(Request $request)
     {
-        $this->authorize('data-region', new Regency());
+        $this->authorize('data-regency', new Regency());
 
         $perPage = $request->input('perPage', null);
         $page = $request->input('page', null);
         $globalSearch = $request->input('globalSearch', '');
         $orderDirection = $request->input('orderDirection', 'desc');
         $orderBy = $request->input('orderBy', 'id');
+        $filterValue = $request->input('filterValue', []);
 
         $query = Regency::query()
             ->with(['province'])
             ->withCount('districts')
             ->latest()
-            ->when($globalSearch, function ($query, $search) {
-                return $query->where('name', 'like', "%{$search}%");
-            })
-            ->orderBy('created_at', 'desc')
+            ->search($globalSearch)
+            ->when(
+                data_get($filterValue, 'province_id'),
+                fn($query, $value) =>
+                $query->where('province_id', $value)
+            )
             ->orderBy($orderBy, $orderDirection);
 
         if ($perPage) {

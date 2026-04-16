@@ -1,28 +1,29 @@
 import { ButtonComponent } from '@/components/partials/button-component';
-import { InputTextComponent } from '@/components/partials/input-components';
+import { InputComponent } from '@/components/partials/input-component';
+import provinces from '@/routes/admin/core/regions/provinces';
 import { useForm, usePage } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
-import { FormEvent } from 'react';
 import { toast } from 'sonner';
 
-export const ProvinceForm = ({ dataId }: { dataId?: number }) => {
+export const ProvinceForm = ({ dataId }: { dataId?: string }) => {
     const { province } = usePage<any>().props;
 
-    const { data, setData, post, put, processing, errors, reset, transform } = useForm({
-        saveBack: 'false',
-        name: province?.name || '',
-    });
+    const { data, setData, post, put, processing, errors, reset, transform } =
+        useForm({
+            saveBack: 'false',
+            name: province?.name || '',
+        });
 
     // transformData
     transform((data) => ({
         ...data,
     }));
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
 
         if (dataId) {
-            put(route('admin.core.regions.provinces.update', dataId), {
+            put(provinces.update(dataId).url, {
                 onSuccess: () => {
                     reset(); // reset form
                 },
@@ -31,7 +32,7 @@ export const ProvinceForm = ({ dataId }: { dataId?: number }) => {
                 },
             });
         } else {
-            post(route('admin.core.regions.provinces.store'), {
+            post(provinces.store().url, {
                 onSuccess: () => {
                     reset(); // reset form
                 },
@@ -45,9 +46,10 @@ export const ProvinceForm = ({ dataId }: { dataId?: number }) => {
     return (
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <InputTextComponent
+                <InputComponent
                     type="text"
                     label="Name"
+                    placeholder="Name"
                     name="name"
                     value={data.name}
                     handleOnChange={(value: string) => setData('name', value)}

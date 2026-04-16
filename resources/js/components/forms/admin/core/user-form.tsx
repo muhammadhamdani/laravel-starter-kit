@@ -1,37 +1,43 @@
 import { ButtonComponent } from '@/components/partials/button-component';
-import { InputTextComponent } from '@/components/partials/input-components';
-import { SelectComponent } from '@/components/partials/select-component';
+import {
+    InputComponent,
+    InputSelectComponent,
+} from '@/components/partials/input-component';
+import users from '@/routes/admin/core/users';
 import { useForm, usePage } from '@inertiajs/react';
 import { EyeClosedIcon, EyeIcon, SaveIcon } from 'lucide-react';
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 export const UserForm = ({ dataId }: { dataId?: number }) => {
     const { user, roles } = usePage<any>().props;
 
-    const { data, setData, post, put, processing, errors, reset, transform } = useForm({
-        saveBack: 'false',
-        name: user?.name || '',
-        email: user?.email || '',
-        password: '',
-        password_confirmation: '',
-        role: user?.roles[0]?.id || '',
-    });
+    const { data, setData, post, put, processing, errors, reset, transform } =
+        useForm({
+            saveBack: 'false',
+            name: user?.name || '',
+            email: user?.email || '',
+            password: '',
+            password_confirmation: '',
+            role: user?.roles[0]?.id || '',
+        });
 
     // transformData
     transform((data) => ({
         ...data,
-        role: roles?.filter((role: any) => role?.id === parseInt(data?.role))[0]?.name,
+        role: roles?.filter((role: any) => role?.id === parseInt(data?.role))[0]
+            ?.name,
     }));
 
     const [showPassword, setShowPassword] = useState(false);
-    const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
+    const [showPasswordConfirmation, setShowPasswordConfirmation] =
+        useState(false);
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
 
         if (dataId) {
-            put(route('admin.core.users.update', dataId), {
+            put(users.update(dataId).url, {
                 onSuccess: () => {
                     reset(); // reset form
                 },
@@ -40,7 +46,7 @@ export const UserForm = ({ dataId }: { dataId?: number }) => {
                 },
             });
         } else {
-            post(route('admin.core.users.store'), {
+            post(users.store().url, {
                 onSuccess: () => {
                     reset(); // reset form
                 },
@@ -54,49 +60,71 @@ export const UserForm = ({ dataId }: { dataId?: number }) => {
     return (
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <InputTextComponent
+                <InputComponent
                     type="text"
                     label="Name"
+                    placeholder="Name"
                     name="name"
                     value={data.name}
                     handleOnChange={(value: string) => setData('name', value)}
                     errors={errors.name && errors.name}
                     helperText={errors.name && errors.name}
                 />
-                <InputTextComponent
+                <InputComponent
                     type="email"
                     label="Email"
+                    placeholder="Email"
                     name="email"
                     value={data.email}
                     handleOnChange={(value: string) => setData('email', value)}
                     errors={errors.email && errors.email}
                     helperText={errors.email && errors.email}
                 />
-                <InputTextComponent
+                <InputComponent
                     type={showPassword ? 'text' : 'password'}
                     label="Password"
+                    placeholder="Password"
                     name="password"
                     value={data.password}
-                    addonRight={showPassword ? EyeClosedIcon : EyeIcon}
-                    addonRightHandler={() => setShowPassword(!showPassword)}
-                    handleOnChange={(value: string) => setData('password', value)}
+                    rightAddon={showPassword ? EyeClosedIcon : EyeIcon}
+                    handleRightAddon={() => setShowPassword(!showPassword)}
+                    handleOnChange={(value: string) =>
+                        setData('password', value)
+                    }
                     errors={errors.password && errors.password}
                     helperText={errors.password && errors.password}
+                    group={true}
                 />
-                <InputTextComponent
+                <InputComponent
                     type={showPasswordConfirmation ? 'text' : 'password'}
                     label="Password Confirmation"
                     name="password_confirmation"
                     value={data.password_confirmation}
-                    addonRight={showPasswordConfirmation ? EyeClosedIcon : EyeIcon}
-                    addonRightHandler={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
-                    handleOnChange={(value: string) => setData('password_confirmation', value)}
-                    errors={errors.password_confirmation && errors.password_confirmation}
-                    helperText={errors.password_confirmation && errors.password_confirmation}
+                    rightAddon={
+                        showPasswordConfirmation ? EyeClosedIcon : EyeIcon
+                    }
+                    handleRightAddon={() =>
+                        setShowPasswordConfirmation(!showPasswordConfirmation)
+                    }
+                    handleOnChange={(value: string) =>
+                        setData('password_confirmation', value)
+                    }
+                    errors={
+                        errors.password_confirmation &&
+                        errors.password_confirmation
+                    }
+                    helperText={
+                        errors.password_confirmation &&
+                        errors.password_confirmation
+                    }
+                    group={true}
                 />
-                <SelectComponent
+                <InputSelectComponent
                     label="Role"
-                    data={roles.map((role: any) => ({ value: role.id, label: role.name }))}
+                    data={roles.map((role: any) => ({
+                        value: role.id,
+                        label: role.name,
+                    }))}
                     dataSelected={data.role}
                     handleOnChange={(value: any) => setData('role', value)}
                     errors={errors.role && errors.role}
@@ -111,9 +139,6 @@ export const UserForm = ({ dataId }: { dataId?: number }) => {
                     isProcessing={processing}
                     onClick={() => setData('saveBack', 'true')}
                 />
-                {/* <Button type="submit" disabled={processing}>
-                    {processing ? 'Menyimpan...' : 'Save'}
-                </Button> */}
             </div>
         </form>
     );

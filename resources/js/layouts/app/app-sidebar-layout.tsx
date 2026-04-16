@@ -2,14 +2,13 @@ import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
-import { Toaster } from '@/components/ui/sonner';
-import { SharedData } from '@/types';
-import { usePage } from '@inertiajs/react';
-import { useEffect, type PropsWithChildren } from 'react';
+import type { AppLayoutProps } from '@/types';
+import { Head, usePage } from '@inertiajs/react';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 
-export default function AppSidebarLayout({ children }: PropsWithChildren<{}>) {
-    const { flash, breadcrumbs } = usePage<SharedData>().props;
+export default function AppSidebarLayout({ children }: AppLayoutProps) {
+    const { flash, pageTitle } = usePage<any>().props;
 
     useEffect(() => {
         if (flash?.success) {
@@ -23,11 +22,11 @@ export default function AppSidebarLayout({ children }: PropsWithChildren<{}>) {
 
     return (
         <AppShell variant="sidebar">
+            <Head title={pageTitle ? pageTitle : 'Laravel'}></Head>
             <AppSidebar />
-            <AppContent variant="sidebar">
-                <AppSidebarHeader breadcrumbs={breadcrumbs} />
+            <AppContent variant="sidebar" className="overflow-x-hidden">
+                <AppSidebarHeader />
                 {children}
-                <Toaster position="top-right" richColors />
             </AppContent>
         </AppShell>
     );

@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Core\Region;
 
-use Inertia\Inertia;
-use App\Traits\LogActivity;
-use Illuminate\Http\Request;
-use App\Models\Core\District;
+use App\Concerns\Trait\LogActivity;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\StoreDistrictRequest;
 use App\Http\Requests\Core\UpdateDistrictRequest;
-use App\Models\Core\Regency;
+use App\Models\Core\Region\District;
+use App\Models\Core\Region\Regency;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class DistrictController extends Controller
 {
@@ -22,7 +22,11 @@ class DistrictController extends Controller
     {
         $this->authorize('viewAny', District::class);
 
-        $data = [];
+        $regencies = Regency::query()->select(['id', 'name'])->get();
+
+        $data = [
+            'regencies' => $regencies
+        ];
 
         return Inertia::render('admin/core/regions/districts/list', $data);
     }
@@ -34,8 +38,10 @@ class DistrictController extends Controller
     {
         $this->authorize('create', District::class);
 
+        $regencies = Regency::query()->select(['id', 'name'])->get();
+
         $data = [
-            'regencies' => Regency::query()->get()
+            'regencies' => $regencies
         ];
 
         return Inertia::render('admin/core/regions/districts/create', $data);
@@ -96,9 +102,11 @@ class DistrictController extends Controller
 
         $findData = District::with(['regency'])->find($district->id);
 
+        $regencies = Regency::query()->select(['id', 'name'])->get();
+
         $data = [
             'district' => $findData,
-            'regencies' => Regency::query()->get()
+            'regencies' => $regencies
         ];
 
         return Inertia::render('admin/core/regions/districts/edit', $data);
@@ -156,22 +164,25 @@ class DistrictController extends Controller
 
     public function getData(Request $request)
     {
-        $this->authorize('data-region', new District());
+        $this->authorize('data-district', new District());
 
         $perPage = $request->input('perPage', null);
         $page = $request->input('page', null);
         $globalSearch = $request->input('globalSearch', '');
         $orderDirection = $request->input('orderDirection', 'desc');
         $orderBy = $request->input('orderBy', 'id');
+        $filterValue = $request->input('filterValue', []);
 
         $query = District::query()
             ->with(['regency'])
             ->withCount('villages')
             ->latest()
-            ->when($globalSearch, function ($query, $search) {
-                return $query->where('name', 'like', "%{$search}%");
-            })
-            ->orderBy('created_at', 'desc')
+            ->search($globalSearch)
+            ->when(
+                data_get($filterValue, 'regency_id'),
+                fn($query, $value) =>
+                $query->where('regency_id', $value)
+            )
             ->orderBy($orderBy, $orderDirection);
 
         if ($perPage) {

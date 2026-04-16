@@ -1,12 +1,9 @@
 <?php
 
-use App\Settings\SiteSetting;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelSettings\SettingsCasts\DataCast;
-use Spatie\LaravelSettings\SettingsCasts\DateTimeZoneCast;
 use Spatie\LaravelSettings\SettingsCasts\DateTimeInterfaceCast;
-use Spatie\LaravelSettings\SettingsRepositories\RedisSettingsRepository;
-use Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository;
+use Spatie\LaravelSettings\SettingsCasts\DateTimeZoneCast;
 
 return [
 
@@ -14,9 +11,7 @@ return [
      * Each settings class used in your application must be registered, you can
      * put them (manually) here.
      */
-    'settings' => [
-        SiteSetting::class,
-    ],
+    'settings' => [],
 
     /*
      * The path where the settings classes will be created.
@@ -43,13 +38,13 @@ return [
      */
     'repositories' => [
         'database' => [
-            'type' => DatabaseSettingsRepository::class,
+            'type' => Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository::class,
             'model' => null,
             'table' => null,
             'connection' => null,
         ],
         'redis' => [
-            'type' => RedisSettingsRepository::class,
+            'type' => Spatie\LaravelSettings\SettingsRepositories\RedisSettingsRepository::class,
             'connection' => null,
             'prefix' => null,
         ],
@@ -73,6 +68,12 @@ return [
         'store' => null,
         'prefix' => null,
         'ttl' => null,
+
+        /*
+         * When enabled, uses Laravel's memoized cache driver (requires Laravel 12.9+)
+         * to keep resolved values in memory during a single request.
+         */
+        'memo' => env('SETTINGS_CACHE_MEMO', false),
     ],
 
     /*

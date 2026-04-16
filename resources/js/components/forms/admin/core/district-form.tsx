@@ -1,19 +1,23 @@
 import { ButtonComponent } from '@/components/partials/button-component';
-import { InputTextComponent } from '@/components/partials/input-components';
-import { SelectSearchComponent } from '@/components/partials/select-component';
+import {
+    InputComponent,
+    InputSelectComponent,
+} from '@/components/partials/input-component';
+import districts from '@/routes/admin/core/regions/districts';
 import { useForm, usePage } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
 import { FormEvent } from 'react';
 import { toast } from 'sonner';
 
-export const DistrictForm = ({ dataId }: { dataId?: number }) => {
+export const DistrictForm = ({ dataId }: { dataId?: string }) => {
     const { district, regencies } = usePage<any>().props;
 
-    const { data, setData, post, put, processing, errors, reset, transform } = useForm({
-        saveBack: 'false',
-        name: district?.name || '',
-        regency_id: district?.regency?.id || '',
-    });
+    const { data, setData, post, put, processing, errors, reset, transform } =
+        useForm({
+            saveBack: 'false',
+            name: district?.name || '',
+            regency_id: district?.regency?.id || '',
+        });
 
     // transformData
     transform((data) => ({
@@ -24,7 +28,7 @@ export const DistrictForm = ({ dataId }: { dataId?: number }) => {
         e.preventDefault();
 
         if (dataId) {
-            put(route('admin.core.regions.districts.update', dataId), {
+            put(districts.update(dataId).url, {
                 onSuccess: () => {
                     reset(); // reset form
                 },
@@ -33,7 +37,7 @@ export const DistrictForm = ({ dataId }: { dataId?: number }) => {
                 },
             });
         } else {
-            post(route('admin.core.regions.districts.store'), {
+            post(districts.store().url, {
                 onSuccess: () => {
                     reset(); // reset form
                 },
@@ -47,23 +51,26 @@ export const DistrictForm = ({ dataId }: { dataId?: number }) => {
     return (
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <InputTextComponent
+                <InputComponent
                     type="text"
                     label="Name"
+                    placeholder="Name"
                     name="name"
                     value={data.name}
                     handleOnChange={(value: string) => setData('name', value)}
                     errors={errors.name && errors.name}
                     helperText={errors.name && errors.name}
                 />
-                <SelectSearchComponent
+                <InputSelectComponent
                     label="Regencies"
                     placeholder="Select Regencies..."
                     data={regencies?.map((item: any) => {
                         return { label: item.name, value: item.id };
                     })}
                     dataSelected={data?.regency_id}
-                    handleOnChange={(value) => setData('regency_id', value)}
+                    handleOnChange={(value: string) =>
+                        setData('regency_id', value)
+                    }
                 />
             </div>
             <div className="flex justify-end space-x-4">

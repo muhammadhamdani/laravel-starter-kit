@@ -27,13 +27,6 @@ class IndoRegionDistrictSeeder extends Seeder
         // Get Data
         $districts = RawDataGetter::getDistricts();
 
-        $districts = array_map(function ($item) {
-            return array_merge($item, [
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }, $districts);
-
         // Insert Data to Database
         DB::table('districts')->insert($districts);
     }

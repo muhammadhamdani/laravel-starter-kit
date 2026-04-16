@@ -1,12 +1,18 @@
-import { DataTableComponent, DataTableProvider } from '@/components/partials/datatables/dataTables';
-import AppLayout from '@/layouts/app-layout';
-import { renderRowHeader } from '@/utils/material-table';
-import { Head } from '@inertiajs/react';
+import { DataTableComponent } from '@/components/partials/dataTables';
+import { DataTableProvider } from '@/components/partials/dataTables/hooks/useDataTables';
+import {
+    renderRowDate,
+    renderRowHeader,
+} from '@/components/partials/dataTables/utils/dataTable-utils';
+import { InputSelectComponent } from '@/components/partials/input-component';
+import provinces from '@/routes/admin/core/regions/provinces';
+import regencies from '@/routes/admin/core/regions/regencies';
+import moment from 'moment';
 import { useState } from 'react';
 
-export default function RegenciesList() {
-    const [filterValue, setFilterValue] = useState();
+export default function ListPage() {
     const [refreshData, setRefreshData] = useState(false);
+    const [filterValue, setFilterValue] = useState<any>({});
 
     const columns = [
         {
@@ -14,32 +20,61 @@ export default function RegenciesList() {
             accessorKey: 'name',
         },
         {
-            header: (info: any) => renderRowHeader(info, 'Provinces'),
+            header: (info: any) => renderRowHeader(info, 'Province'),
             accessorKey: 'province_id',
             accessorFn: (row: any) => row.province.name,
         },
         {
-            header: (info: any) => renderRowHeader(info, 'Districts'),
-            accessorKey: 'districts_count',
+            header: (info: any) => renderRowHeader(info, 'Created At'),
+            accessorKey: 'created_at',
+            cell: (info: any) => renderRowDate(info.getValue()),
+        },
+        {
+            header: (info: any) => renderRowHeader(info, 'Updated At'),
+            accessorKey: 'updated_at',
+            cell: (info: any) => renderRowDate(info.getValue()),
         },
     ];
 
+    const formatDataExport = (data: any) => {
+        return data.map((item: any, i: number) => ({
+            No: i + 1,
+            Name: item.name,
+            'Created At': moment(item.created_at).format('YYYY-MM-DD HH:mm:ss'),
+            'Updated At': moment(item.updated_at).format('YYYY-MM-DD HH:mm:ss'),
+        }));
+    };
+
     return (
-        <AppLayout>
-            <Head title="Regencies List" />
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative flex min-h-screen flex-1 flex-col space-y-4 overflow-hidden rounded-xl border md:min-h-min">
-                    <DataTableProvider
-                        columns={columns}
-                        filterValue={filterValue}
-                        setFilterValue={setFilterValue}
-                        refreshData={refreshData}
-                        setRefreshData={setRefreshData}
-                    >
-                        <DataTableComponent buttonActive={{ import: false, export: false, bulkaction: false }} />
-                    </DataTableProvider>
-                </div>
+        <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <div className="relative min-h-screen flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
+                <DataTableProvider
+                    columns={columns}
+                    filterValue={filterValue}
+                    refreshData={refreshData}
+                    setRefreshData={setRefreshData}
+                    urlFetchData={regencies.data().url}
+                    formatDataExport={formatDataExport}
+                >
+                    <div className="flex flex-col space-y-4 px-4 pt-8 md:px-8">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                            <InputSelectComponent
+                                label="Provinces"
+                                placeholder="Filter by provinces..."
+                                fetchDataUrl={provinces.data().url}
+                                dataSelected={filterValue.province_id}
+                                handleOnChange={(value: any) =>
+                                    setFilterValue((prev: any) => ({
+                                        ...prev,
+                                        province_id: value,
+                                    }))
+                                }
+                            />
+                        </div>
+                    </div>
+                    <DataTableComponent buttonActive={{ export: false }} />
+                </DataTableProvider>
             </div>
-        </AppLayout>
+        </div>
     );
 }

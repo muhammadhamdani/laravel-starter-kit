@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\Core\User;
-use App\Models\Core\Social;
-use Illuminate\Support\Str;
+use App\Concerns\Trait\LogActivity;
 use App\Http\Controllers\Controller;
+use App\Models\Core\Social;
+use App\Models\Core\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteController extends Controller
 {
+    use LogActivity;
+
     public function redirect(string $provider)
     {
         return Socialite::driver($provider)->redirect();
@@ -53,6 +57,19 @@ class SocialiteController extends Controller
         }
 
         Auth::login($user);
+
+        $user->refresh();
+        $user->load('roles');
+
+        if ($user) {
+            $this->logSuccess('login-user', "Login User: {$user->name}", [
+                'user_id' => $user->id,
+            ]);
+        } else {
+            $this->logError('login-user', "Failed to log    in user: {$user->name}", [
+                'user_id' => $user->id,
+            ]);
+        }
 
         return redirect()->intended(route('admin.dashboard', absolute: false))->with('success', 'You are logged in!');
     }

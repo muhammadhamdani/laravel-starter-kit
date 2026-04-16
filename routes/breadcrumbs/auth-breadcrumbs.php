@@ -31,10 +31,10 @@ Breadcrumbs::for('admin.profile.edit', function (BreadcrumbTrail $trail) {
     $trail->push('Profile Settings', route('admin.profile.edit'));
 });
 
-Breadcrumbs::for('admin.password.edit', function (BreadcrumbTrail $trail) {
-    $trail->push('Profile Settings', route('admin.password.edit'));
+Breadcrumbs::for('admin.security.edit', function (BreadcrumbTrail $trail) {
+    $trail->push('Profile Settings', route('admin.security.edit'));
 });
 
-Breadcrumbs::for('admin.appearance', function (BreadcrumbTrail $trail) {
-    $trail->push('Profile Settings', route('admin.appearance'));
+Breadcrumbs::for('admin.appearance.edit', function (BreadcrumbTrail $trail) {
+    $trail->push('Profile Settings', route('admin.appearance.edit'));
 });

@@ -1,18 +1,31 @@
-import { DataTableComponent, DataTableProvider } from '@/components/partials/datatables/dataTables';
-import AppLayout from '@/layouts/app-layout';
-import { renderRowHeader } from '@/utils/material-table';
-import { Head } from '@inertiajs/react';
+import { DataTableComponent } from '@/components/partials/dataTables';
+import { DataTableProvider } from '@/components/partials/dataTables/hooks/useDataTables';
+import {
+    renderRowDate,
+    renderRowHeader,
+} from '@/components/partials/dataTables/utils/dataTable-utils';
+import roles from '@/routes/admin/core/roles';
 import moment from 'moment';
 import { useState } from 'react';
 
 export default function ListPage() {
-    const [filterValue, setFilterValue] = useState();
     const [refreshData, setRefreshData] = useState(false);
+    const [filterValue, setFilterValue] = useState({});
 
     const columns = [
         {
             header: (info: any) => renderRowHeader(info, 'Name'),
             accessorKey: 'name',
+        },
+        {
+            header: (info: any) => renderRowHeader(info, 'Created At'),
+            accessorKey: 'created_at',
+            cell: (info: any) => renderRowDate(info.getValue()),
+        },
+        {
+            header: (info: any) => renderRowHeader(info, 'Updated At'),
+            accessorKey: 'updated_at',
+            cell: (info: any) => renderRowDate(info.getValue()),
         },
     ];
 
@@ -26,22 +39,19 @@ export default function ListPage() {
     };
 
     return (
-        <AppLayout>
-            <Head title="Roles List" />
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative flex min-h-screen flex-1 flex-col space-y-4 overflow-hidden rounded-xl border md:min-h-min">
-                    <DataTableProvider
-                        columns={columns}
-                        filterValue={filterValue}
-                        setFilterValue={setFilterValue}
-                        refreshData={refreshData}
-                        setRefreshData={setRefreshData}
-                        formatData={formatDataExport}
-                    >
-                        <DataTableComponent buttonActive={{ import: false, export: false, bulkaction: false }} />
-                    </DataTableProvider>
-                </div>
+        <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <div className="relative min-h-screen flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
+                <DataTableProvider
+                    columns={columns}
+                    filterValue={filterValue}
+                    refreshData={refreshData}
+                    setRefreshData={setRefreshData}
+                    urlFetchData={roles.data().url}
+                    formatDataExport={formatDataExport}
+                >
+                    <DataTableComponent buttonActive={{ export: false }} />
+                </DataTableProvider>
             </div>
-        </AppLayout>
+        </div>
     );
 }

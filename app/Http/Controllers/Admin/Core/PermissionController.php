@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Core;
 
-use Inertia\Inertia;
-use App\Models\Core\Role;
-use Illuminate\Http\Request;
-use App\Models\Core\Permission;
+use App\Concerns\Trait\LogActivity;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\StorePermissionRequest;
 use App\Http\Requests\Core\UpdatePermissionRequest;
-use App\Traits\LogActivity;
+use App\Models\Core\Permission;
+use App\Models\Core\Role;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PermissionController extends Controller
 {
@@ -22,7 +22,9 @@ class PermissionController extends Controller
     {
         $this->authorize('viewAny', Permission::class);
 
-        $data = [];
+        $data = [
+            'pageTitle' => 'Permission List',
+        ];
 
         return Inertia::render('admin/core/permissions/list', $data);
     }
@@ -34,7 +36,7 @@ class PermissionController extends Controller
     {
         $this->authorize('create', Permission::class);
 
-        $roles = Role::with('permissions')->get();
+        $roles = Role::with('permissions')->select(['id', 'name'])->get();
 
         $data = [
             'roles' => $roles
@@ -161,10 +163,7 @@ class PermissionController extends Controller
         $query = Permission::query()
             ->with(['roles'])
             ->latest()
-            ->when($globalSearch, function ($query, $search) {
-                return $query->where('name', 'like', "%{$search}%");
-            })
-            ->orderBy('created_at', 'desc')
+            ->search($globalSearch)
             ->orderBy($orderBy, $orderDirection);
 
         if ($perPage) {

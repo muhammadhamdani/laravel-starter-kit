@@ -1,26 +1,28 @@
-"use client"
+import { useAppearance } from '@/hooks/use-appearance';
+import { useFlashToast } from '@/hooks/use-flash-toast';
+import { CSSProperties } from 'react';
+import { Toaster as Sonner, type ToasterProps } from 'sonner';
 
-import { useTheme } from "next-themes"
-import { CSSProperties } from "react"
-import { Toaster as Sonner, ToasterProps } from "sonner"
+function Toaster({ ...props }: ToasterProps) {
+    const { appearance } = useAppearance();
 
-const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+    useFlashToast();
 
-  return (
-    <Sonner
-      theme={theme as ToasterProps["theme"]}
-      className="toaster group"
-      style={
-        {
-          "--normal-bg": "var(--popover)",
-          "--normal-text": "var(--popover-foreground)",
-          "--normal-border": "var(--border)",
-        } as CSSProperties
-      }
-      {...props}
-    />
-  )
+    return (
+        <Sonner
+            theme={appearance}
+            className="toaster group"
+            position="bottom-right"
+            style={
+                {
+                    '--normal-bg': 'var(--popover)',
+                    '--normal-text': 'var(--popover-foreground)',
+                    '--normal-border': 'var(--border)',
+                } as CSSProperties
+            }
+            {...props}
+        />
+    );
 }
 
-export { Toaster }
+export { Toaster };

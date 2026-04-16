@@ -1,18 +1,20 @@
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { SharedData } from '@/types';
+import type { AppVariant } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-interface AppShellProps {
+type Props = {
     children: ReactNode;
-    variant?: 'header' | 'sidebar';
-}
+    variant?: AppVariant;
+};
 
-export function AppShell({ children, variant = 'header' }: AppShellProps) {
-    const isOpen = usePage<SharedData>().props.sidebarOpen;
+export function AppShell({ children, variant = 'sidebar' }: Props) {
+    const isOpen = usePage<any>().props.sidebarOpen;
 
     if (variant === 'header') {
-        return <div className="flex min-h-screen w-full flex-col">{children}</div>;
+        return (
+            <div className="flex min-h-screen w-full flex-col">{children}</div>
+        );
     }
 
     return <SidebarProvider defaultOpen={isOpen}>{children}</SidebarProvider>;

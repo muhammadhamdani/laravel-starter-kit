@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Core\Region;
 
-use Inertia\Inertia;
-use App\Traits\LogActivity;
-use Illuminate\Http\Request;
-use App\Models\Core\Province;
+use App\Concerns\Trait\LogActivity;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Core\StoreProvinceRequest;
 use App\Http\Requests\Core\UpdateProvinceRequest;
+use App\Models\Core\Region\Province;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ProvinceController extends Controller
 {
@@ -127,7 +127,7 @@ class ProvinceController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.core.permissions.index')->with('success', 'Permission Updated Successfully');
+        return redirect()->route('admin.core.regions.provinces.index')->with('success', 'Permission Updated Successfully');
     }
 
     /**
@@ -150,7 +150,7 @@ class ProvinceController extends Controller
 
     public function getData(Request $request)
     {
-        $this->authorize('data-region', new Province());
+        $this->authorize('data-province', new Province());
 
         $perPage = $request->input('perPage', null);
         $page = $request->input('page', null);
@@ -161,10 +161,7 @@ class ProvinceController extends Controller
         $query = Province::query()
             ->withCount('regencies')
             ->latest()
-            ->when($globalSearch, function ($query, $search) {
-                return $query->where('name', 'like', "%{$search}%");
-            })
-            ->orderBy('created_at', 'desc')
+            ->search($globalSearch)
             ->orderBy($orderBy, $orderDirection);
 
         if ($perPage) {

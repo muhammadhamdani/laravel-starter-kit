@@ -1,18 +1,21 @@
 import { ButtonComponent } from '@/components/partials/button-component';
-import { InputTextComponent } from '@/components/partials/input-components';
+import { InputComponent } from '@/components/partials/input-component';
+import { Checkbox } from '@/components/ui/checkbox';
+import roles from '@/routes/admin/core/roles';
 import { useForm, usePage } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
-import { FormEvent } from 'react';
 import { toast } from 'sonner';
 
 export const RoleForm = ({ dataId }: { dataId?: number }) => {
     const { role, permissions } = usePage<any>().props;
 
-    const { data, setData, post, put, processing, errors, reset, transform } = useForm({
-        saveBack: 'false',
-        name: role?.name || '',
-        permissions: role?.permissions.map((permission: any) => permission.id) || [],
-    });
+    const { data, setData, post, put, processing, errors, reset, transform } =
+        useForm({
+            saveBack: 'false',
+            name: role?.name || '',
+            permissions:
+                role?.permissions.map((permission: any) => permission.id) || [],
+        });
 
     // transformData
     transform((data) => ({
@@ -21,10 +24,12 @@ export const RoleForm = ({ dataId }: { dataId?: number }) => {
 
     const groupedPermissions = Object.values(
         permissions.reduce((acc: any, permission: any) => {
-            const match = permission.name.match(/^(view|create|update|delete|data|restore|force-delete|bulk|verify)-(.*)$/);
-            if (!match) return acc;
+            const parts = permission.name.split('-');
 
-            const subject = match[2];
+            // minimal harus ada action + subject
+            if (parts.length < 2) return acc;
+
+            const subject = parts.slice(1).join('-'); // handle "force-delete-user"
 
             if (!acc[subject]) {
                 acc[subject] = {
@@ -41,14 +46,18 @@ export const RoleForm = ({ dataId }: { dataId?: number }) => {
 
     const togglePermission = (id: number) => {
         const currentPermissions = data.permissions || [];
-        const newPermissions = currentPermissions.includes(id) ? currentPermissions.filter((x: any) => x !== id) : [...currentPermissions, id];
+        const newPermissions = currentPermissions.includes(id)
+            ? currentPermissions.filter((x: any) => x !== id)
+            : [...currentPermissions, id];
 
         setData('permissions', newPermissions);
     };
 
     const toggleAllInGroup = (group: any) => {
         const groupIds = group.permissions.map((p: any) => p.id);
-        const isAllChecked = groupIds.every((id: any) => data.permissions.includes(id));
+        const isAllChecked = groupIds.every((id: any) =>
+            data.permissions.includes(id),
+        );
 
         const newPermissions = isAllChecked
             ? data.permissions.filter((id: any) => !groupIds.includes(id))
@@ -57,11 +66,11 @@ export const RoleForm = ({ dataId }: { dataId?: number }) => {
         setData('permissions', newPermissions);
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
 
         if (dataId) {
-            put(route('admin.core.roles.update', dataId), {
+            put(roles.update(dataId).url, {
                 onSuccess: () => {
                     reset(); // reset form
                 },
@@ -70,7 +79,7 @@ export const RoleForm = ({ dataId }: { dataId?: number }) => {
                 },
             });
         } else {
-            post(route('admin.core.roles.store'), {
+            post(roles.store().url, {
                 onSuccess: () => {
                     reset(); // reset form
                 },
@@ -84,9 +93,10 @@ export const RoleForm = ({ dataId }: { dataId?: number }) => {
     return (
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <InputTextComponent
+                <InputComponent
                     type="text"
                     label="Name"
+                    placeholder="Name"
                     name="name"
                     value={data.name}
                     handleOnChange={(value: string) => setData('name', value)}
@@ -98,28 +108,53 @@ export const RoleForm = ({ dataId }: { dataId?: number }) => {
                 <label className="text-sm font-semibold">Access Role</label>
                 <div className="grid grid-cols-3 gap-4">
                     {groupedPermissions.map((group: any) => {
-                        const groupIds = group.permissions.map((p: any) => p.id);
-                        const allChecked = groupIds.every((id: any) => data.permissions.includes(id));
+                        const groupIds = group.permissions.map(
+                            (p: any) => p.id,
+                        );
+                        const allChecked = groupIds.every((id: any) =>
+                            data.permissions.includes(id),
+                        );
 
                         return (
-                            <div key={group.group} className="rounded border p-4">
+                            <div
+                                key={group.group}
+                                className="rounded border p-4"
+                            >
                                 <div className="mb-2 flex items-center justify-between">
-                                    <h3 className="text-base font-semibold capitalize">{group.group.replace(/[-_]/g, ' ')}</h3>
-                                    <button type="button" onClick={() => toggleAllInGroup(group)} className="text-sm text-blue-600 hover:underline">
-                                        {allChecked ? 'Uncheck All' : 'Check All'}
+                                    <h3 className="text-base font-semibold capitalize">
+                                        {group.group.replace(/[-_]/g, ' ')}
+                                    </h3>
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleAllInGroup(group)}
+                                        className="text-sm text-blue-600 hover:underline"
+                                    >
+                                        {allChecked
+                                            ? 'Uncheck All'
+                                            : 'Check All'}
                                     </button>
                                 </div>
                                 <div className="space-y-1">
-                                    {group.permissions.map((permission: any) => (
-                                        <label key={permission.id} className="flex items-center space-x-2">
-                                            <input
-                                                type="checkbox"
-                                                checked={data.permissions.includes(permission.id)}
-                                                onChange={() => togglePermission(permission.id)}
-                                            />
-                                            <span>{permission.name}</span>
-                                        </label>
-                                    ))}
+                                    {group.permissions.map(
+                                        (permission: any) => (
+                                            <label
+                                                key={permission.id}
+                                                className="flex items-center space-x-2"
+                                            >
+                                                <Checkbox
+                                                    checked={data.permissions.includes(
+                                                        permission.id,
+                                                    )}
+                                                    onChange={() =>
+                                                        togglePermission(
+                                                            permission.id,
+                                                        )
+                                                    }
+                                                />
+                                                <span>{permission.name}</span>
+                                            </label>
+                                        ),
+                                    )}
                                 </div>
                             </div>
                         );
