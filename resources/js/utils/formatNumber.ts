@@ -21,3 +21,18 @@ export const formatNumberWhatsapp = (value: string) => {
 
     return number;
 };
+
+export const formatRupiah = ({ value, prefix = 'Rp' }: FormatRupiahProps) => {
+    const formatted = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+    }).format(Number(value));
+
+    return `${prefix} ${formatted.replace('Rp', '').trim()}`;
+};
+
+interface FormatRupiahProps {
+    value: number | string;
+    prefix?: string; // default: "Rp"
+}

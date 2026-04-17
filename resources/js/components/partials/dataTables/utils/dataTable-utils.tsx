@@ -60,6 +60,38 @@ export const renderRowDate = (value: any) => {
     return moment(value).locale('id').format('DD MMMM YYYY');
 };
 
+export const renderRowParagraph = (value: string) => {
+    return (
+        <div className="line-clamp-2 wrap-break-word whitespace-normal">
+            {value}
+        </div>
+    );
+};
+
+export const renderRowImage = (
+    value: any,
+    className: string,
+    isExternal?: boolean,
+) => {
+    if (!value) {
+        return <div className="text-gray-400 italic">No Image</div>;
+    }
+
+    // Pastikan path file
+    const url = isExternal ? value : `/storage/${value}`;
+
+    return (
+        <img
+            src={url}
+            alt="Image"
+            className={`rounded-md object-cover ${className}`}
+            width={40}
+            height={40}
+            loading="lazy"
+        />
+    );
+};
+
 export const renderRowActions = (info: any, setRefreshData: any) => {
     const { currentUrl } = useCurrentUrl();
 

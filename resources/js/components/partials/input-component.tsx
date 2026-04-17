@@ -25,6 +25,7 @@ import {
     InputGroupInput,
 } from '../ui/input-group';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Textarea } from '../ui/textarea';
 
 export const InputComponent = ({
     type = 'text',
@@ -121,8 +122,60 @@ export const InputComponent = ({
     );
 };
 
+export const InputTextAreaComponent = ({
+    placeholder = 'Placeholder',
+    className = '',
+    label,
+    errors,
+    helperText,
+    handleOnChange = () => {},
+    ...props
+}: {
+    placeholder?: string;
+    label?: string;
+    className?: string;
+    handleOnChange?: (e: any) => void;
+    group?: boolean;
+    errors?: any;
+    helperText?: any;
+    [key: string]: any;
+}) => {
+    return (
+        <Field data-invalid={errors}>
+            {label && <FieldLabel htmlFor={label}>{label}</FieldLabel>}
+            <Textarea
+                rows={30}
+                cols={10}
+                placeholder={placeholder}
+                className={cn(
+                    className,
+                    errors &&
+                        'border-red-500 focus:border-red-500 focus:ring-red-500',
+                )}
+                onChange={(e) => handleOnChange(e.target.value)}
+                {...props}
+            />
+            {helperText && (
+                <FieldDescription
+                    className={cn(
+                        'flex items-center space-x-2',
+                        errors ? 'text-destructive' : 'text-yellow-500',
+                    )}
+                >
+                    <InfoIcon
+                        className={cn(
+                            'h-4 w-4',
+                            errors ? 'text-destructive' : 'text-yellow-500',
+                        )}
+                    />
+                    <span>{helperText}</span>
+                </FieldDescription>
+            )}
+        </Field>
+    );
+};
+
 export const InputFileComponent = ({
-    type = 'file',
     placeholder = 'Placeholder',
     className = '',
     label,
