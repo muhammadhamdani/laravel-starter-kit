@@ -67,7 +67,9 @@ class District extends Model
     public function scopeSearch($query, $search)
     {
         return $query->when($search, function ($q, $search) {
-            $q->where('name', 'like', "%{$search}%");
+            $q->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
+            });
         });
     }
 }

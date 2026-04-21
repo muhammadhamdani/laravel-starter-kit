@@ -245,9 +245,12 @@ class UserController extends Controller
                     $roleQuery->where('id', $value);
                 })
             )
-            ->orderBy($orderBy, $orderDirection)
-            ->paginate($perPage, ['*'], 'page', $page);
+            ->orderBy($orderBy, $orderDirection);
 
-        return response()->json($query);
+        $data = $perPage
+            ? $query->paginate($perPage, ['*'], 'page', $page)
+            : $query->get();
+
+        return response()->json($data);
     }
 }

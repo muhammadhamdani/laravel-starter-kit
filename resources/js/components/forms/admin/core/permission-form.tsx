@@ -3,7 +3,6 @@ import { InputComponent } from '@/components/partials/input-component';
 import permissions from '@/routes/admin/core/permissions';
 import { useForm, usePage } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
-import { toast } from 'sonner';
 
 export const PermissionForm = ({ dataId }: { dataId?: number }) => {
     const { permission } = usePage<any>().props;
@@ -15,33 +14,18 @@ export const PermissionForm = ({ dataId }: { dataId?: number }) => {
         });
 
     // transformData
-    transform((data) => ({
+    transform((data: any) => ({
         ...data,
+        ...(dataId && { _method: 'put' }),
     }));
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
 
         if (dataId) {
-            put(permissions.update(dataId).url, {
-                onSuccess: () => {
-                    reset(); // reset form
-                },
-                onError: () => {
-                    toast.error('Terjadi kesalahan saat mengubah permission');
-                },
-            });
+            put(permissions.update(dataId).url, {});
         } else {
-            post(permissions.store().url, {
-                onSuccess: () => {
-                    reset(); // reset form
-                },
-                onError: () => {
-                    toast.error(
-                        'Terjadi kesalahan saat menambahkan permission',
-                    );
-                },
-            });
+            post(permissions.store().url, {});
         }
     };
 

@@ -6,7 +6,6 @@ import {
 import villages from '@/routes/admin/core/regions/villages';
 import { useForm, usePage } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
-import { toast } from 'sonner';
 
 export const VillageForm = ({ dataId }: { dataId?: string }) => {
     const { village, districts } = usePage<any>().props;
@@ -19,31 +18,18 @@ export const VillageForm = ({ dataId }: { dataId?: string }) => {
         });
 
     // transformData
-    transform((data) => ({
+    transform((data: any) => ({
         ...data,
+        ...(dataId && { _method: 'put' }),
     }));
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
 
         if (dataId) {
-            put(villages.update(dataId).url, {
-                onSuccess: () => {
-                    reset(); // reset form
-                },
-                onError: () => {
-                    toast.error('Terjadi kesalahan saat mengubah village');
-                },
-            });
+            put(villages.update(dataId).url, {});
         } else {
-            post(villages.store().url, {
-                onSuccess: () => {
-                    reset(); // reset form
-                },
-                onError: () => {
-                    toast.error('Terjadi kesalahan saat menambahkan village');
-                },
-            });
+            post(villages.store().url, {});
         }
     };
 

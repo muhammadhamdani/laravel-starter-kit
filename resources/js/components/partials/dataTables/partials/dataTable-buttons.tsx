@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn } from '@/lib/utils';
+import { arrayToCSV, downloadCSV } from '@/utils/formatCsv';
 import { router } from '@inertiajs/react';
 import { CopyIcon, DownloadIcon, PlusIcon, RefreshCwIcon } from 'lucide-react';
 import { createElement } from 'react';
@@ -80,6 +81,12 @@ export const DataTableButtons = ({
                             toast.error('Tidak ada data yang dipilih');
                             return;
                         }
+
+                        const formatedData = formatDataExport(selectedRows);
+
+                        const csv = arrayToCSV(formatedData);
+
+                        downloadCSV(csv, 'export.csv');
                     },
                 },
                 {
@@ -90,6 +97,10 @@ export const DataTableButtons = ({
                             toast.error('Tidak ada data yang dipilih');
                             return;
                         }
+
+                        const formatedData = formatDataExport(selectedRows);
+
+                        console.log(formatedData);
                     },
                 },
             ],

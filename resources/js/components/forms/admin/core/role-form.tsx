@@ -4,7 +4,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import roles from '@/routes/admin/core/roles';
 import { useForm, usePage } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
-import { toast } from 'sonner';
 
 export const RoleForm = ({ dataId }: { dataId?: number }) => {
     const { role, permissions } = usePage<any>().props;
@@ -18,8 +17,9 @@ export const RoleForm = ({ dataId }: { dataId?: number }) => {
         });
 
     // transformData
-    transform((data) => ({
+    transform((data: any) => ({
         ...data,
+        ...(dataId && { _method: 'put' }),
     }));
 
     const groupedPermissions = Object.values(
@@ -70,23 +70,9 @@ export const RoleForm = ({ dataId }: { dataId?: number }) => {
         e.preventDefault();
 
         if (dataId) {
-            put(roles.update(dataId).url, {
-                onSuccess: () => {
-                    reset(); // reset form
-                },
-                onError: () => {
-                    toast.error('Terjadi kesalahan saat mengubah role');
-                },
-            });
+            put(roles.update(dataId).url, {});
         } else {
-            post(roles.store().url, {
-                onSuccess: () => {
-                    reset(); // reset form
-                },
-                onError: () => {
-                    toast.error('Terjadi kesalahan saat menambahkan role');
-                },
-            });
+            post(roles.store().url, {});
         }
     };
 

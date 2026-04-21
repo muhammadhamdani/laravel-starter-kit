@@ -20,22 +20,16 @@ export const DistrictForm = ({ dataId }: { dataId?: string }) => {
         });
 
     // transformData
-    transform((data) => ({
+    transform((data: any) => ({
         ...data,
+        ...(dataId && { _method: 'put' }),
     }));
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
         if (dataId) {
-            put(districts.update(dataId).url, {
-                onSuccess: () => {
-                    reset(); // reset form
-                },
-                onError: () => {
-                    toast.error('Terjadi kesalahan saat mengubah district');
-                },
-            });
+            put(districts.update(dataId).url, {});
         } else {
             post(districts.store().url, {
                 onSuccess: () => {

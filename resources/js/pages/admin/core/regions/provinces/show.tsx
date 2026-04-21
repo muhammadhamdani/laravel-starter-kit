@@ -1,4 +1,6 @@
+import { Card } from '@/components/ui/card';
 import { usePage } from '@inertiajs/react';
+import { InfoIcon } from 'lucide-react';
 import moment from 'moment-timezone';
 
 export default function DetailPage() {
@@ -6,35 +8,41 @@ export default function DetailPage() {
 
     return (
         <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div className="relative min-h-screen flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 md:p-6">
-                    <div className="flex flex-col space-y-2">
-                        <label htmlFor="name" className="text-sm font-semibold">
-                            Name
-                        </label>
-                        <p className="text-sm">{province.name}</p>
+            <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-screen flex-1 overflow-hidden rounded-xl border md:min-h-min">
+                <Card className="min-h-full p-4 md:p-6">
+                    <div className="flex items-center space-x-2">
+                        <InfoIcon className="h-4 w-4" />
+                        <span className="text-sm font-semibold">
+                            Detail Information
+                        </span>
                     </div>
-                    <div className="flex flex-col space-y-2">
-                        <label className="text-sm font-semibold">
-                            Created At
-                        </label>
-                        <p className="text-sm">
-                            {moment(province.created_at)
-                                .tz('Asia/Jakarta')
-                                .format('DD MMMM YYYY')}
-                        </p>
-                    </div>
-                    <div className="flex flex-col space-y-2">
-                        <label className="text-sm font-semibold">
-                            Updated At
-                        </label>
-                        <p className="text-sm">
-                            {moment(province.updated_at)
-                                .tz('Asia/Jakarta')
-                                .format('DD MMMM YYYY')}
-                        </p>
-                    </div>
-                </div>
+                    <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <li className="flex flex-col space-y-2">
+                            <span className="text-sm font-semibold">Name</span>
+                            <span className="text-sm">{province.name}</span>
+                        </li>
+                        <li className="flex flex-col space-y-2">
+                            <span className="text-sm font-semibold">
+                                Created At
+                            </span>
+                            <span className="text-sm">
+                                {moment(province.created_at)
+                                    .tz('Asia/Jakarta')
+                                    .format('DD MMMM YYYY')}
+                            </span>
+                        </li>
+                        <li className="flex flex-col space-y-2">
+                            <span className="text-sm font-semibold">
+                                Updated At
+                            </span>
+                            <span className="text-sm">
+                                {moment(province.updated_at)
+                                    .tz('Asia/Jakarta')
+                                    .format('DD MMMM YYYY')}
+                            </span>
+                        </li>
+                    </ul>
+                </Card>
             </div>
         </div>
     );

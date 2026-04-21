@@ -20,6 +20,7 @@ import {
     ChevronDownIcon,
     ChevronsUpDownIcon,
     ChevronUpIcon,
+    FileTextIcon,
     MoreHorizontal,
 } from 'lucide-react';
 import moment from 'moment-timezone';
@@ -60,12 +61,28 @@ export const renderRowDate = (value: any) => {
     return moment(value).locale('id').format('DD MMMM YYYY');
 };
 
+export const renderRowNumber = (value: number) => {
+    return new Intl.NumberFormat('id-ID').format(value);
+};
+
 export const renderRowParagraph = (value: string) => {
     return (
         <div className="line-clamp-2 wrap-break-word whitespace-normal">
             {value}
         </div>
     );
+};
+
+export const renderRowPDF = (value: any) => {
+    if (value) {
+        return (
+            <a href={`/storage/${value}`} target="_blank">
+                <FileTextIcon className="h-8 w-8 text-red-500" />
+            </a>
+        );
+    }
+
+    return <div>No PDF</div>;
 };
 
 export const renderRowImage = (

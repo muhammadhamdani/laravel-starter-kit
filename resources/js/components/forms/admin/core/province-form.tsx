@@ -3,7 +3,6 @@ import { InputComponent } from '@/components/partials/input-component';
 import provinces from '@/routes/admin/core/regions/provinces';
 import { useForm, usePage } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
-import { toast } from 'sonner';
 
 export const ProvinceForm = ({ dataId }: { dataId?: string }) => {
     const { province } = usePage<any>().props;
@@ -15,31 +14,18 @@ export const ProvinceForm = ({ dataId }: { dataId?: string }) => {
         });
 
     // transformData
-    transform((data) => ({
+    transform((data: any) => ({
         ...data,
+        ...(dataId && { _method: 'put' }),
     }));
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
 
         if (dataId) {
-            put(provinces.update(dataId).url, {
-                onSuccess: () => {
-                    reset(); // reset form
-                },
-                onError: () => {
-                    toast.error('Terjadi kesalahan saat mengubah Province');
-                },
-            });
+            put(provinces.update(dataId).url, {});
         } else {
-            post(provinces.store().url, {
-                onSuccess: () => {
-                    reset(); // reset form
-                },
-                onError: () => {
-                    toast.error('Terjadi kesalahan saat menambahkan Province');
-                },
-            });
+            post(provinces.store().url, {});
         }
     };
 

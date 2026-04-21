@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import axios from 'axios';
-import { Check, ChevronsUpDown, InfoIcon } from 'lucide-react';
+import { Check, ChevronDownIcon, ChevronsUpDown, InfoIcon } from 'lucide-react';
+import moment from 'moment';
 import {
     createElement,
     useCallback,
@@ -8,7 +9,9 @@ import {
     useMemo,
     useState,
 } from 'react';
+import { DateRange } from 'react-day-picker';
 import { Button } from '../ui/button';
+import { Calendar } from '../ui/calendar';
 import {
     Command,
     CommandEmpty,
@@ -246,7 +249,19 @@ export const InputSelectComponent = ({
     multiple,
     handleOnChange,
     fetchDataUrl,
-}: any) => {
+    ...props
+}: {
+    placeholder?: string;
+    data?: any;
+    dataSelected?: any;
+    label?: string;
+    errors?: any;
+    helperText?: any;
+    multiple?: boolean;
+    handleOnChange?: any;
+    fetchDataUrl?: string;
+    [key: string]: any;
+}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [resultData, setResultData] = useState(data ?? []);
@@ -449,8 +464,215 @@ export const InputSelectComponent = ({
     );
 };
 
-export const InputSwitchComponent = () => {
-    return <div>InputSwitchComponent</div>;
+export const InputDateComponent = ({
+    placeholder = 'Select Date',
+    className = '',
+    value,
+    label,
+    errors,
+    helperText,
+    group = false,
+    handleOnChange = () => {},
+}: any) => {
+    const [open, setOpen] = useState(false);
+
+    const [internalDate, setInternalDate] = useState<Date | undefined>(
+        !group ? value : undefined,
+    );
+
+    const [range, setRange] = useState<DateRange | undefined>(
+        group ? value : undefined,
+    );
+
+    const selectedDate = value ?? internalDate;
+    const selectedRange = value ?? range;
+
+    const handleSelect = (val: any) => {
+        if (group) {
+            setRange(val);
+            handleOnChange?.(val);
+
+            // close kalau sudah lengkap
+            if (val?.from && val?.to) {
+                setOpen(false);
+            }
+        } else {
+            setInternalDate(val);
+            handleOnChange?.(val);
+            setOpen(false);
+        }
+    };
+
+    const formatDate = () => {
+        if (group) {
+            if (!selectedRange?.from) return placeholder;
+
+            if (selectedRange.to) {
+                return `${moment(selectedRange.from).format('DD MMM YYYY')} - ${moment(selectedRange.to).format('DD MMM YYYY')}`;
+            }
+
+            return moment(selectedRange.from).format('DD MMM YYYY');
+        }
+
+        if (!selectedDate) return placeholder;
+
+        return moment(selectedDate).format('DD MMM YYYY');
+    };
+
+    return (
+        <Field data-invalid={errors}>
+            {label && <FieldLabel>{label}</FieldLabel>}
+
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <Button
+                        variant="outline"
+                        className={cn(
+                            'w-full justify-between font-normal',
+                            !value && 'text-muted-foreground',
+                            errors && 'border-red-500',
+                            className,
+                        )}
+                    >
+                        {formatDate()}
+                        <ChevronDownIcon className="h-4 w-4 opacity-60" />
+                    </Button>
+                </PopoverTrigger>
+
+                <PopoverContent align="start" className="w-auto p-0">
+                    {group ? (
+                        <Calendar
+                            mode="range"
+                            selected={selectedRange}
+                            onSelect={(val: DateRange | undefined) =>
+                                handleSelect(val)
+                            }
+                            numberOfMonths={2}
+                        />
+                    ) : (
+                        <Calendar
+                            mode="single"
+                            selected={selectedDate}
+                            onSelect={(val: Date | undefined) =>
+                                handleSelect(val)
+                            }
+                        />
+                    )}
+                </PopoverContent>
+            </Popover>
+
+            {helperText && (
+                <FieldDescription
+                    className={cn(
+                        'flex items-center space-x-2',
+                        errors ? 'text-destructive' : 'text-yellow-500',
+                    )}
+                >
+                    <InfoIcon className="h-4 w-4" />
+                    <span>{helperText}</span>
+                </FieldDescription>
+            )}
+        </Field>
+    );
+};
+
+export const InputNumberComponent = ({
+    type = 'text',
+    placeholder = 'Placeholder',
+    className = '',
+    label,
+    errors,
+    helperText,
+    group = false,
+    leftAddon = false,
+    rightAddon = false,
+    register,
+    handleLeftAddon = () => {},
+    handleRightAddon = () => {},
+    handleOnChange = () => {},
+    ...props
+}: {
+    type?: string;
+    placeholder?: string;
+    label?: string;
+    className?: string;
+    leftAddon?: any;
+    rightAddon?: any;
+    register?: any;
+    handleLeftAddon?: (e: any) => void;
+    handleRightAddon?: (e: any) => void;
+    handleOnChange?: (e: any) => void;
+    group?: boolean;
+    errors?: any;
+    helperText?: any;
+    [key: string]: any;
+}) => {
+    return (
+        <Field data-invalid={errors}>
+            {label && <FieldLabel htmlFor={label}>{label}</FieldLabel>}
+            {group ? (
+                <InputGroup>
+                    {leftAddon && (
+                        <InputGroupAddon align="inline-start">
+                            {createElement(leftAddon, {
+                                onClick: handleLeftAddon,
+                                className: 'w-5 h-5 cursor-pointer',
+                            })}
+                        </InputGroupAddon>
+                    )}
+                    <InputGroupInput
+                        type={type}
+                        placeholder={placeholder}
+                        className={cn(
+                            className,
+                            errors &&
+                                'border-red-500 focus:border-red-500 focus:ring-red-500',
+                        )}
+                        onChange={(e) => handleOnChange(e.target.value)}
+                        {...register}
+                        {...props}
+                    />
+                    {rightAddon && (
+                        <InputGroupAddon align="inline-end">
+                            {createElement(rightAddon, {
+                                onClick: handleRightAddon,
+                                className: 'w-5 h-5 cursor-pointer',
+                            })}
+                        </InputGroupAddon>
+                    )}
+                </InputGroup>
+            ) : (
+                <Input
+                    type={type}
+                    placeholder={placeholder}
+                    className={cn(
+                        className,
+                        errors &&
+                            'border-red-500 focus:border-red-500 focus:ring-red-500',
+                    )}
+                    onChange={(e) => handleOnChange(e.target.value)}
+                    {...register}
+                    {...props}
+                />
+            )}
+            {helperText && (
+                <FieldDescription
+                    className={cn(
+                        'flex items-center space-x-2',
+                        errors ? 'text-destructive' : 'text-yellow-500',
+                    )}
+                >
+                    <InfoIcon
+                        className={cn(
+                            'h-4 w-4',
+                            errors ? 'text-destructive' : 'text-yellow-500',
+                        )}
+                    />
+                    <span>{helperText}</span>
+                </FieldDescription>
+            )}
+        </Field>
+    );
 };
 
 export const InputCheckboxComponent = () => {

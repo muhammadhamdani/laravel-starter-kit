@@ -6,7 +6,6 @@ import {
 import regencies from '@/routes/admin/core/regions/regencies';
 import { useForm, usePage } from '@inertiajs/react';
 import { SaveIcon } from 'lucide-react';
-import { toast } from 'sonner';
 
 export const RegencyForm = ({ dataId }: { dataId?: string }) => {
     const { regency, provinces } = usePage<any>().props;
@@ -19,31 +18,18 @@ export const RegencyForm = ({ dataId }: { dataId?: string }) => {
         });
 
     // transformData
-    transform((data) => ({
+    transform((data: any) => ({
         ...data,
+        ...(dataId && { _method: 'put' }),
     }));
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
 
         if (dataId) {
-            put(regencies.update(dataId).url, {
-                onSuccess: () => {
-                    reset(); // reset form
-                },
-                onError: () => {
-                    toast.error('Terjadi kesalahan saat mengubah regency');
-                },
-            });
+            put(regencies.update(dataId).url, {});
         } else {
-            post(regencies.store().url, {
-                onSuccess: () => {
-                    reset(); // reset form
-                },
-                onError: () => {
-                    toast.error('Terjadi kesalahan saat menambahkan regency');
-                },
-            });
+            post(regencies.store().url, {});
         }
     };
 

@@ -7,7 +7,6 @@ import users from '@/routes/admin/core/users';
 import { useForm, usePage } from '@inertiajs/react';
 import { EyeClosedIcon, EyeIcon, SaveIcon } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 export const UserForm = ({ dataId }: { dataId?: number }) => {
     const { user, roles } = usePage<any>().props;
@@ -23,10 +22,11 @@ export const UserForm = ({ dataId }: { dataId?: number }) => {
         });
 
     // transformData
-    transform((data) => ({
+    transform((data: any) => ({
         ...data,
         role: roles?.filter((role: any) => role?.id === parseInt(data?.role))[0]
             ?.name,
+        ...(dataId && { _method: 'put' }),
     }));
 
     const [showPassword, setShowPassword] = useState(false);
@@ -37,23 +37,9 @@ export const UserForm = ({ dataId }: { dataId?: number }) => {
         e.preventDefault();
 
         if (dataId) {
-            put(users.update(dataId).url, {
-                onSuccess: () => {
-                    reset(); // reset form
-                },
-                onError: () => {
-                    toast.error('Terjadi kesalahan saat mengubah user');
-                },
-            });
+            put(users.update(dataId).url, {});
         } else {
-            post(users.store().url, {
-                onSuccess: () => {
-                    reset(); // reset form
-                },
-                onError: () => {
-                    toast.error('Terjadi kesalahan saat menambahkan user');
-                },
-            });
+            post(users.store().url, {});
         }
     };
 

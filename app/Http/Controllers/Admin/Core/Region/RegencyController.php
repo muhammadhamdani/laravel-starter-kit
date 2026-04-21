@@ -185,11 +185,9 @@ class RegencyController extends Controller
             )
             ->orderBy($orderBy, $orderDirection);
 
-        if ($perPage) {
-            $data = $query->paginate($perPage, ['*'], 'page', $page);
-        } else {
-            $data = $query->get();
-        }
+        $data = $perPage
+            ? $query->paginate($perPage, ['*'], 'page', $page)
+            : $query->get();
 
         return response()->json($data);
     }

@@ -9,7 +9,7 @@ interface ButtonProps {
     buttonType?: 'button' | 'submit' | 'reset';
     isProcessing?: boolean;
     addonLeft?: any;
-    addonRight?: any;
+    rightAddon?: any;
     [key: string]: any;
 }
 
@@ -19,7 +19,7 @@ export const ButtonComponent = ({
     className = '',
     isProcessing = false,
     addonLeft,
-    addonRight,
+    rightAddon,
     ...props
 }: ButtonProps) => {
     return (
@@ -31,8 +31,22 @@ export const ButtonComponent = ({
         >
             {addonLeft && createElement(addonLeft, { className: 'w-5 h-5' })}
             <span>{buttonText}</span>
-            {addonRight && createElement(addonRight, { className: 'w-5 h-5' })}
+            {rightAddon && createElement(rightAddon, { className: 'w-5 h-5' })}
             {isProcessing && <Spinner className="animate-spin" />}
+        </Button>
+    );
+};
+
+export const ButtonIconComponent = ({
+    buttonType = 'button',
+    icons = 'Button',
+    className = '',
+    pill = false,
+    ...props
+}: ButtonProps) => {
+    return (
+        <Button type={buttonType} className={cn(className)} {...props}>
+            {icons && createElement(icons, { className: 'w-5 h-5' })}
         </Button>
     );
 };
